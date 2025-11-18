@@ -1,0 +1,50 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+.nyc_output/
+
+# Build output
+dist/
+out/
+release/
+build/
+
+# Electron Forge / Builder specific
+.electron/
+electron-builder.yml
+forge.config.js
+package-lock.json
+yarn.lock
+
+# Temporary files
+.tmp/
+.cache/
+.vscode/
+.idea/
+
+# dotenv environment variables
+.env
+.env.*.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Compiled binary addons
+build/Release/
