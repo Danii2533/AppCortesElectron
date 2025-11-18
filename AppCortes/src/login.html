@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ETHAN CUTS</title>
+  <link rel="icon" href="../resources/icono.png" type="image/png" />
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <div class="login-container">
+    <img src="../resources/icono.png" alt="Icono de la app" />
+    <h2>Iniciar Sesión</h2>
+    <input type="text" placeholder="Usuario" id="username" autocomplete="off" />
+    <input type="password" placeholder="Contraseña" id="password" />
+    <button id="entrar-btn">Entrar</button>
+    <button id="register-btn">Registrarse</button>
+    <script>
+      document.getElementById('entrar-btn').addEventListener('click', () => {
+      window.electronAPI.showGaleriaWindow();
+      });
+      document.getElementById('register-btn').addEventListener('click', () => {
+      window.electronAPI.showRegisterWindow();
+      });
+    </script>
+    <p id="login-message" class="login-message"></p>
+  </div>
+</body>
+</html>

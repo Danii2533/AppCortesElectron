@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peluquería - SPA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="general.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h2>Peluquería</h2>
+                <button id="toggle-sidebar-btn" aria-label="Ocultar menú">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+
+            <nav>
+                <a class="menu-item active" onclick="openSection('galeria')">
+                    <i class="fas fa-images"></i>
+                    <span>Galería de Cortes</span>
+                </a>
+
+                <a class="menu-item" onclick="openSection('citas')">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendario de Citas</span>
+                </a>
+
+                <a class="menu-item" onclick="openSection('clientes')">
+                    <i class="fas fa-users"></i>
+                    <span>Gestión de Clientes</span>
+                </a>
+
+                <a class="menu-item" onclick="openSection('configuracion')">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- CONTENEDOR DONDE SE CARGA TODO -->
+        <main id="app">
+
+
+        </main>
+
+    </div>
+
+    <script>
+        // Mostrar/ocultar sidebar
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButton = document.getElementById('toggle-sidebar-btn');
+            const appContainer = document.querySelector('.app-container');
+
+            toggleButton.addEventListener('click', () => {
+                appContainer.classList.toggle('collapsed');
+
+                const icon = toggleButton.querySelector('i');
+                if (appContainer.classList.contains('collapsed')) {
+                    icon.classList.remove('fa-chevron-left');
+                    icon.classList.add('fa-chevron-right');
+                    toggleButton.setAttribute('aria-label', 'Mostrar menú');
+                } else {
+                    icon.classList.remove('fa-chevron-right');
+                    icon.classList.add('fa-chevron-left');
+                    toggleButton.setAttribute('aria-label', 'Ocultar menú');
+                }
+            });
+        });
+
+        // Función para cargar vistas externas
+        async function openSection(page) {
+
+            // Activar solo el botón actual
+            document.querySelectorAll('.menu-item')
+                .forEach(item => item.classList.remove('active'));
+
+            const clickedItem = [...document.querySelectorAll('.menu-item')]
+                .find(btn => btn.getAttribute("onclick").includes(page));
+            clickedItem.classList.add('active');
+
+            // Cargar archivo externo
+            const html = await fetch(page + ".html").then(res => res.text());
+
+            // Insertarlo en el contenedor
+            document.getElementById("app").innerHTML = html;
+        }
+
+        // Página por defecto
+        openSection("galeria");
+
+        
+    </script>
+
+
+</body>
+
+</html>

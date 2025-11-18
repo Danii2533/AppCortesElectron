@@ -1,0 +1,50 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #272727;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.splash-container {
+  text-align: center;
+}
+
+.progress-bar {
+  width: 300px;
+  height: 20px;
+  background-color: #444;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.progress {
+  height: 100%;
+  width: 0%;
+  background-color: #ffd900;
+  border-radius: 10px;
+  animation: bounce-fill 3s ease-in-out forwards;
+}
+
+@keyframes bounce-fill {
+  0%   { width: 0%; }
+  100%  { width: 80%; }
+  90%  { width: 90%; }
+  100% { width: 100%; }
+}
+
+.file-status {
+  color: #ccc;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  height: 1.5rem; /* Para evitar salto visual al cambiar texto */
+  transition: opacity 0.2s ease;
+  text-align: center;
+}
+

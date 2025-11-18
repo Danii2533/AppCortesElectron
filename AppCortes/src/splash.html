@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cargando...</title>
+  <link rel="stylesheet" href="splash.css" />
+</head>
+<body>
+  <div class="splash-container">
+    <p>Cargando aplicación...</p>
+
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- Texto del archivo que se está cargando -->
+    <p class="file-status" id="file-status">Iniciando...</p>
+  </div>
+
+  <script>
+    const progress = document.getElementById("progress");
+    const fileStatus = document.getElementById("file-status");
+
+    const filesToLoad = [
+      "base de datos clientes...",
+      "estilos de la aplicación...",
+      "componentes gráficos...",
+      "iconos y recursos...",
+      "configuración de inicio...",
+      "módulos de seguridad...",
+      "conexión con MongoDB...",
+      "interfaz de usuario..."
+    ];
+
+    let loaded = 0;
+
+    function loadNextFile() {
+      if (loaded >= filesToLoad.length) {
+        fileStatus.textContent = "Carga completa";
+        setTimeout(() => {
+          window.electronAPI.finishSplash();
+        }, 500);
+        return;
+      }
+
+      const fileName = filesToLoad[loaded];
+      fileStatus.textContent = `✔ ${fileName}`;
+
+      loaded++;
+      const percent = (loaded / filesToLoad.length) * 100;
+      progress.style.width = `${percent}%`;
+
+      setTimeout(loadNextFile, 300);
+    }
+
+    loadNextFile();
+  </script>
+</body>
+</html>

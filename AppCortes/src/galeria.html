@@ -1,0 +1,45 @@
+<header class="main-header">
+    <h1>Galeria De Cortes</h1>
+    <button class="upload-btn" onclick="showToast('Cliente añadido')">Añadir Corte</button>
+    <div id="toast" class="toast"></div>
+</header>
+<section class="gallery-grid">
+            <div class="cut-card">
+                <img src="placeholder-modern.jpg" alt="Corte Moderno">
+                <div class="card-info">
+                    <p class="cut-name">Corte Moderno</p>
+                    <p class="cut-tags">#degradado #hombres #estilo</p>
+                </div>
+            </div>
+
+            <div class="cut-card">
+                <img src="placeholder-bob.jpg" alt="Corte Bob">
+                <div class="card-info">
+                    <p class="cut-name">Corte Bob</p>
+                    <p class="cut-tags">#bob #mujer #elegante</p>
+                </div>
+            </div>
+
+            <div class="cut-card">
+                <img src="placeholder-fantasia.jpg" alt="Color Fantasía">
+                <div class="card-info">
+                    <p class="cut-name">Color Fantasía</p>
+                    <p class="cut-tags">#colorido #atrevido #fantasia</p>
+                </div>
+            </div>
+</section>
+
+<script>
+    function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    // Desaparece después de 3 segundos
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+    
+</script>
+

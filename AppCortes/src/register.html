@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ETHAN CUTS</title>
+  <link rel="icon" href="../resources/icono.png" type="image/png" />
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <div class="login-container">
+    <img src="../resources/icono.png" alt="Icono de la app" />
+    <h2>Iniciar Sesión</h2>
+    <p>Nombre de Usuario</p>
+    <input type="text" placeholder="Nombre de Usuario" id="username" autocomplete="off" />
+    <p>Correo Electronico</p>
+    <input type="text" placeholder="Correo Electrónico" id="email" autocomplete="off" />
+    <p>Contraseña</p>
+    <input type="password" placeholder="Contraseña" id="password" autocomplete="off" />
+    <p>Confirmar Contraseña</p>
+    <input type="password" placeholder="Confirmar Contraseña" id="confirm-password" />
+    <button id="register-btn">Registrarse</button>
+    <a id="tengo_cuenta">¿Ya tienes una cuenta? Inicia Sesión</a>
+    <script>
+      document.getElementById("register-btn").addEventListener("click", () => {
+        const inputs = document.querySelectorAll("input");
+        inputs.forEach(input => input.value = "");
+      });
+
+      document.getElementById('tengo_cuenta').addEventListener('click', () => {
+      window.electronAPI.showLoginWindow();
+      });
+    </script>
+  </div>
+</body>
+</html>
