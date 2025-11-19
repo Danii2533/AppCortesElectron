@@ -60,6 +60,7 @@ body {
     padding: 0 15px 20px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
     margin-bottom: 10px;
+    
 }
 
 .sidebar-header h2 {
@@ -103,6 +104,7 @@ body {
     border-radius: 14px;
     overflow: hidden;
     transition: background-color 0.2s, color 0.2s;
+    font-weight: 700;
 }
 
 /* ICONOS SVG DEL MENÚ — MISMO TAMAÑO QUE LA FLECHA */
@@ -111,6 +113,7 @@ body {
     height: 28px;
     margin-right: 15px;
     transition: filter 0.3s ease, opacity 0.2s ease;
+    filter: invert(1);
 }
 
 /* Hover y activo */
@@ -120,17 +123,18 @@ body {
 }
 
 .menu-item:hover img {
-    filter: brightness(0) invert(1); /* Icono blanco en hover */
+    filter: brightness(0); 
+    filter: invert(1);
 }
 
 .menu-item.active {
     background-color: var(--btn-bg);
     color: var(--btn-text);
-    font-weight: 700;
+    font-weight: 750;
 }
 
 .menu-item.active img {
-    filter: brightness(0) invert(1); /* Icono blanco cuando está activo */
+    filter: brightness(0); /* Icono blanco cuando está activo */
 }
 
 .menu-item::after {
@@ -169,11 +173,37 @@ body {
     transform: rotate(0deg);
 }
 
+/* ====== AJUSTE DE HOVER EN SIDEBAR COLAPSADA ====== */
+.app-container.collapsed .menu-item {
+    padding: 12px 15px; /* reduce el padding para que el hover no quede gigante */
+    margin: 0;          /* limpia márgenes anteriores */
+    border-radius: 8px; /* para que el hover siga siendo suave */
+}
+
+.app-container.collapsed .menu-item:hover:not(.active) {
+    background-color: var(--shadow-color);
+    border-radius: 15px; 
+}
+
+/* Línea inferior (el ::after) también debe ajustarse */
+.app-container.collapsed .menu-item::after {
+    left: 20px;
+    right: 20px;
+    display: none !important;
+}
+
+.app-container.collapsed .menu-item:hover:not(.active)::after {
+    width: calc(100% - 24px);
+    filter: invert(1);
+}
+
+
 /* ICONOS EN SIDEBAR COLAPSADA — MOVER MÁS A LA IZQUIERDA */
 .app-container.collapsed .menu-item img {
     margin-right: 0;
-    margin-left: -5px; /* Mueve el icono hacia la izquierda */
-    transition: margin 0.3s ease; /* Suave animación al colapsar */
+    margin-left: 15px; 
+    transition: margin 0.3s ease; 
+   
 }
 
 
@@ -187,20 +217,16 @@ body {
 }
 
 .app-container.collapsed .menu-item.active {
-    background-color: transparent;
+    background-color: var(--btn-bg);
     font-weight: 600;
+    border-radius: 15px; 
 }
 
 /* Evitar movimiento de iconos en sidebar colapsada */
 .app-container.collapsed .menu-item:hover img {
-    margin-left: -5px; /* Igual al estado normal colapsado */
+    margin-left: 15px; /* mismo valor que cuando NO está en hover */
     margin-right: 0;
-    transform: none; /* Evita cualquier efecto de transformación */
-}
-
-
-.app-container.collapsed .menu-item.active img {
-    filter: brightness(0) invert(1); /* Mantener icono blanco en activo aunque colapse */
+    
 }
 
 /* ================= MAIN CONTENT ================= */
