@@ -77,7 +77,14 @@ body {
     transition: transform 0.3s ease;
 }
 
+/* ICONO DE LA FLECHA */
+#toggle-sidebar-btn img {
+    width: 22px;
+    height: 22px;
+    filter: invert(100%);
+}
 
+/* ================= ITEMS DEL MENÚ ================= */
 .sidebar-menu {
     display: flex;
     flex-direction: column;
@@ -98,17 +105,32 @@ body {
     transition: background-color 0.2s, color 0.2s;
 }
 
-
-.menu-item i {
+/* ICONOS SVG DEL MENÚ — MISMO TAMAÑO QUE LA FLECHA */
+.menu-item img {
+    width: 28px;
+    height: 28px;
     margin-right: 15px;
-    font-size: 1.4rem;
-    width: 20px;
+    transition: filter 0.3s ease, opacity 0.2s ease;
 }
 
 /* Hover y activo */
 .menu-item:hover:not(.active) {
     background-color: rgba(255,255,255,0.05);
     color: var(--title-text);
+}
+
+.menu-item:hover img {
+    filter: brightness(0) invert(1); /* Icono blanco en hover */
+}
+
+.menu-item.active {
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    font-weight: 700;
+}
+
+.menu-item.active img {
+    filter: brightness(0) invert(1); /* Icono blanco cuando está activo */
 }
 
 .menu-item::after {
@@ -128,13 +150,6 @@ body {
     width: calc(100% - 40px);
 }
 
-
-.menu-item.active {
-    background-color: var(--btn-bg);
-    color: var(--btn-text);
-    font-weight: 700;
-}
-
 /* ================= SIDEBAR COLAPSADA ================= */
 .app-container.collapsed #sidebar {
     width: 60px;
@@ -150,19 +165,15 @@ body {
     padding-bottom: 20px;
 }
 
-#toggle-sidebar-btn {
-    background: none;
-    border: none;
-    color: #ffffff; 
-    cursor: pointer;
-    padding: 5px;
-    font-size: 1rem;
-    transition: transform 0.3s ease, color 0.3s ease;
+.app-container.collapsed #toggle-sidebar-btn {
+    transform: rotate(0deg);
 }
 
-
-.app-container.collapsed #toggle-sidebar-btn {
-    transform: rotate(0deg); /* Cambia a horizontal */
+/* ICONOS EN SIDEBAR COLAPSADA — MOVER MÁS A LA IZQUIERDA */
+.app-container.collapsed .menu-item img {
+    margin-right: 0;
+    margin-left: -5px; /* Mueve el icono hacia la izquierda */
+    transition: margin 0.3s ease; /* Suave animación al colapsar */
 }
 
 
@@ -175,34 +186,31 @@ body {
     transition: none;
 }
 
-.app-container.collapsed .menu-item i {
-    margin: 0;
-    display: block;
-    text-align: left;
-}
-
 .app-container.collapsed .menu-item.active {
     background-color: transparent;
     font-weight: 600;
 }
 
-.app-container.collapsed .menu-item:hover,
-.app-container.collapsed .menu-item:hover::after {
-    background: transparent !important;
-    color: var(--normal-text) !important;
-    width: 0 !important;
-    height: 0 !important;
-    transition: none !important;
+/* Evitar movimiento de iconos en sidebar colapsada */
+.app-container.collapsed .menu-item:hover img {
+    margin-left: -5px; /* Igual al estado normal colapsado */
+    margin-right: 0;
+    transform: none; /* Evita cualquier efecto de transformación */
+}
+
+
+.app-container.collapsed .menu-item.active img {
+    filter: brightness(0) invert(1); /* Mantener icono blanco en activo aunque colapse */
 }
 
 /* ================= MAIN CONTENT ================= */
 #app {
-    flex: 1; /* ocupa todo el espacio restante */
+    flex: 1;
     display: flex;
     flex-direction: column;
     background-color: var(--bg-container);
     padding: 20px;
-    overflow-y: auto; /* permite scroll si el contenido es largo */
+    overflow-y: auto;
 }
 
 .main-header {
@@ -262,7 +270,6 @@ body {
     opacity: 0.8;
 }
 
-
 /* ================= GALLERY GRID ================= */
 .gallery-grid {
     display: grid;
@@ -311,12 +318,12 @@ body {
     opacity: 0.8;
 }
 
-/* ================= BARRA DE NOTIFICACION ================= */
+/* ================= TOAST ================= */
 .toast {
     position: fixed;
     top: 20px;
     right: 20px;
-    background-color: var(--success-color); 
+    background-color: var(--success-color);
     color: white;
     padding: 12px 20px;
     border-radius: 6px;
@@ -329,21 +336,8 @@ body {
     z-index: 9999;
 }
 
-.toast.error{
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: var(--error-color); 
-    color: white;
-    padding: 12px 20px;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    font-weight: 600;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-    transform: translateY(-20px);
-    z-index: 9999;
+.toast.error {
+    background-color: var(--error-color);
 }
 
 .toast.show {
@@ -352,58 +346,32 @@ body {
     transform: translateY(0);
 }
 
-
-/* ================= BARRA DE NOTIFICACION ================= */
-.amarillo {
-    background-color: #FFD700; /* Amarillo dorado */
-    color: black; /* Mejor contraste sobre amarillo */
-}
-
-
 /* ================= COLOR BOTONES ================= */
-
 .upload-btn-color {
-    width: 120px; /* tamaño uniforme */
+    width: 120px;
     height: 45px;
     border: none;
-    color: rgb(0, 0, 0); /* texto en blanco para buen contraste */
+    color: rgb(0, 0, 0);
     font-weight: bold;
     cursor: pointer;
-    border-radius: 10px; /* esquinas redondeadas */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* sombra sutil */
-    transition: all 0.3s ease; /* transición suave */
-    text-transform: uppercase; /* estilo moderno */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
 }
 
-/* Hover: efecto de levantado */
 .upload-btn-color:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 10px rgba(0,0,0,0.15);
 }
 
-/* Presionado: efecto clic */
 .upload-btn-color:active {
     transform: translateY(1px);
     box-shadow: 0 3px 5px rgba(0,0,0,0.2);
 }
 
-/* Colores planos por botón */
-.celeste {
-    background-color: var(--btn-bg-celeste); /* Azul celeste */
-}
-
-.rojo {
-    background-color: var(--btn-bg-red); /* Rojo */
-}
-
-.verde {
-    background-color: var(--btn-bg-green); /* Verde */
-}
-
-.azul {
-    background-color: var(--btn-bg-blue); /* Azul */
-}
-
-.amarillo {
-    background-color: var(--btn-bg); /* Amarillo */
-}
+.celeste { background-color: var(--btn-bg-celeste); }
+.rojo { background-color: var(--btn-bg-red); }
+.verde { background-color: var(--btn-bg-green); }
+.azul { background-color: var(--btn-bg-blue); }
+.amarillo { background-color: var(--btn-bg); }
