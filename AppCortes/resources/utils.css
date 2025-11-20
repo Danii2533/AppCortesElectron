@@ -1,0 +1,32 @@
+:root {
+    --success-color: #10a37f;
+    --error-color: #ff4f4f;
+}
+
+/* ================= TOAST ================= */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: var(--success-color);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateY(-20px);
+    z-index: 9999;
+}
+
+.toast.error {
+    background-color: var(--error-color);
+}
+
+.toast.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}

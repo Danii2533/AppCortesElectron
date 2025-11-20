@@ -8,16 +8,7 @@
     --btn-bg: #ffd900;
     --btn-bg-hover: #8a8146;
     --btn-text: #000;
-
-    /*Variaciones de Boton*/
-    --btn-bg-red: #FF4500;
-    --btn-bg-blue: #0f72d4;
-    --btn-bg-green: #55de55;
-    --btn-bg-celeste: #8cd9f3;
-
-    --success-color: #10a37f;
-    --error-color: #ff4f4f;
-
+    
     --title-text: #fff;
     --normal-text: #ccc;
 }
@@ -105,6 +96,7 @@ body {
     overflow: hidden;
     transition: background-color 0.2s, color 0.2s;
     font-weight: 700;
+    cursor: pointer;
 }
 
 /* ICONOS SVG DEL MENÚ — MISMO TAMAÑO QUE LA FLECHA */
@@ -134,7 +126,7 @@ body {
 }
 
 .menu-item.active img {
-    filter: brightness(0); /* Icono blanco cuando está activo */
+    filter: brightness(0); 
 }
 
 .menu-item::after {
@@ -267,110 +259,8 @@ body {
     background-color: var(--btn-bg-hover);
 }
 
-/* ================= CLIENT CARDS ================= */
-.client-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding-bottom: 20px;
-}
 
-.client-card {
-    background-color: var(--bg-body);
-    color: var(--title-text);
-    border-radius: 8px;
-    padding: 15px 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-}
 
-.client-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.6);
-}
-
-.client-card .tag {
-    font-size: 0.85rem;
-    color: var(--normal-text);
-    opacity: 0.8;
-}
-
-/* ================= GALLERY GRID ================= */
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
-    gap: 20px;
-    padding-bottom: 20px;
-}
-
-.cut-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    background-color: var(--bg-body);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-    cursor: pointer;
-}
-
-.cut-card img {
-    width: 100%;
-    height: 350px;
-    object-fit: cover;
-    display: block;
-    filter: brightness(0.9);
-}
-
-.card-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 10px 15px;
-    background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
-    color: var(--title-text);
-}
-
-.cut-name {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 2px;
-}
-
-.cut-tags {
-    font-size: 0.8rem;
-    font-style: italic;
-    color: var(--normal-text);
-    opacity: 0.8;
-}
-
-/* ================= TOAST ================= */
-.toast {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: var(--success-color);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    font-weight: 600;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-    transform: translateY(-20px);
-    z-index: 9999;
-}
-
-.toast.error {
-    background-color: var(--error-color);
-}
-
-.toast.show {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
-}
 
 /* ================= COLOR BOTONES ================= */
 .upload-btn-color {
@@ -386,18 +276,3 @@ body {
     text-transform: uppercase;
 }
 
-.upload-btn-color:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-}
-
-.upload-btn-color:active {
-    transform: translateY(1px);
-    box-shadow: 0 3px 5px rgba(0,0,0,0.2);
-}
-
-.celeste { background-color: var(--btn-bg-celeste); }
-.rojo { background-color: var(--btn-bg-red); }
-.verde { background-color: var(--btn-bg-green); }
-.azul { background-color: var(--btn-bg-blue); }
-.amarillo { background-color: var(--btn-bg); }
