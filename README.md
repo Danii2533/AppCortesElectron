@@ -161,7 +161,7 @@ El archivo `forge.config.js` gestiona:
 
 * [Enlaze de Stich.](https://stitch.withgoogle.com/projects/4679072098660141080)
 * [Enlaze de intalación electron.](https://www.electronjs.org)
-* [Uso de Paleta de Colores.]([https://www.electronjs.org](https://coolors.co/?home)
+* [Uso de Paleta de Colores.]([https://www.electronjs.org](https://coolors.co/?home))
  
 
 
