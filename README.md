@@ -11,22 +11,58 @@
 
 ## Estructura del Proyecto:
 ````Bash
-AppCortes/
+ElectronApp/
+├─ .vscode/
+│   ├─ settings.json
+│   └─ extensions.json
+│
+├─ BBDD/
+│   └─ (archivos de base de datos)
+│
+├─ GuiaDeEstilos/
+│   └─ (documentación, estilos, recursos UI)
+│
+├─ node_modules/
+│   └─ (dependencias instaladas)
+│
+├─ resources/
+│   ├─ images/
+│   │   └─ (iconos, recursos gráficos)
+│   ├─ icons/
+│   ├─ html/
+│   │   ├─ index.html
+│   │   └─ vistas/*.html
+│   └─ css/
+│       ├─ main.css
+│       └─ estilos adicionales
+│
 ├─ src/
-│  ├─ css/
-│  │  ├─ Header.js
-│  │  └─ Footer.js
-│  ├─ js/
-│  │  ├─ index.js
-│  │  └─ about.js
-│  └─ view/
-│     ├─ Header.js
-│     └─ helpers.js
-├─ public/
-│  ├─ images/
-│  └─ styles/
-├─ README.md
-└─ package.json
-
+│   ├─ electron/
+│   │   ├─ main.ts
+│   │   ├─ preload.ts
+│   │   ├─ ipc/
+│   │   │   ├─ handlers.ts
+│   │   │   └─ canales.ts
+│   │   └─ windows/
+│   │       ├─ mainWindow.ts
+│   │       └─ otros.ts
+│   │
+│   ├─ renderer/
+│   │   ├─ scripts/
+│   │   │   ├─ ui.js
+│   │   │   ├─ eventos.js
+│   │   │   └─ lógica.js
+│   │   └─ styles/
+│   │       └─ renderer.css
+│   │
+│   └─ utils/
+│       ├─ fs.ts
+│       ├─ paths.ts
+│       └─ helpers.ts
+│
+├─ forge.config.js
+├─ package.json
+├─ package-lock.json
+└─ .gitignore
 ````
 
