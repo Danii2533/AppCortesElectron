@@ -159,8 +159,8 @@ El archivo `forge.config.js` gestiona:
 
 ## Link Conceptos
 
-[Enlaze de Stich.](https://stitch.withgoogle.com/projects/4679072098660141080)
-[Enlaze de intalación electron.](https://www.electronjs.org)
+* [Enlaze de Stich.](https://stitch.withgoogle.com/projects/4679072098660141080)
+* [Enlaze de intalación electron.](https://www.electronjs.org)
 
 
 
