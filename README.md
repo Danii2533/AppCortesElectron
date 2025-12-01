@@ -156,3 +156,8 @@ El archivo `forge.config.js` gestiona:
 * Integrar un framework de UI moderno (React, Vue, Svelte).
 * Gestionar estados globales con Redux o Zustand.
 * Documentar API interna de IPC.
+
+## Link Conceptos
+
+[Enlaze de Stich:](https://stitch.withgoogle.com/projects/4679072098660141080)
+
