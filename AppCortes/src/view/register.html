@@ -3,32 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ETHAN CUTS</title>
+  <title>ETHAN CUTS – Registro</title>
   <link rel="icon" href="../../resources/icono.png" type="image/png" />
   <link rel="stylesheet" href="../css/login.css" />
 </head>
 <body>
   <div class="login-container">
     <img src="../../resources/icono.png" alt="Icono de la app" />
-    <h2>Iniciar Sesión</h2>
+    <h2>Crear Cuenta</h2>
+
     <p>Nombre de Usuario</p>
-    <input type="text" placeholder="Nombre de Usuario" id="username" autocomplete="off" />
-    <p>Correo Electronico</p>
-    <input type="text" placeholder="Correo Electrónico" id="email" autocomplete="off" />
+    <input type="text"     placeholder="Nombre de Usuario"  id="username"         autocomplete="off" />
+    <p>Correo Electrónico</p>
+    <input type="text"     placeholder="Correo Electrónico" id="email"            autocomplete="off" />
     <p>Contraseña</p>
-    <input type="password" placeholder="Contraseña" id="password" autocomplete="off" />
+    <input type="password" placeholder="Contraseña"         id="password"         autocomplete="off" />
     <p>Confirmar Contraseña</p>
     <input type="password" placeholder="Confirmar Contraseña" id="confirm-password" />
+
     <button id="register-btn">Registrarse</button>
+    <p id="register-message" class="login-message"></p>
     <a id="tengo_cuenta">¿Ya tienes una cuenta? Inicia Sesión</a>
+
     <script>
-      document.getElementById("register-btn").addEventListener("click", () => {
-        const inputs = document.querySelectorAll("input");
-        inputs.forEach(input => input.value = "");
+      const API_BASE = 'http://localhost/appcortes/api';
+
+      document.getElementById('register-btn').addEventListener('click', async () => {
+        const nombre    = document.getElementById('username').value.trim();
+        const email     = document.getElementById('email').value.trim();
+        const password  = document.getElementById('password').value.trim();
+        const confirm   = document.getElementById('confirm-password').value.trim();
+        const msg       = document.getElementById('register-message');
+
+        msg.style.color = '#e74c3c';
+
+        if (!nombre || !email || !password || !confirm) {
+          msg.textContent = 'Rellena todos los campos.';
+          return;
+        }
+        if (password !== confirm) {
+          msg.textContent = 'Las contraseñas no coinciden.';
+          return;
+        }
+        if (password.length < 6) {
+          msg.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+          return;
+        }
+
+        try {
+          const res  = await fetch(`${API_BASE}/register.php`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ nombre, email, password }),
+          });
+          const data = await res.json();
+
+          if (data.success) {
+            msg.style.color = '#2ecc71';
+            msg.textContent = data.message;
+            // Limpiar campos
+            document.querySelectorAll('input').forEach(i => i.value = '');
+            // Volver al login tras 2 s
+            setTimeout(() => window.electronAPI.showLoginWindow(), 2000);
+          } else {
+            msg.textContent = data.message || 'Error al registrarse.';
+          }
+        } catch (err) {
+          msg.textContent = 'No se pudo conectar con el servidor. ¿Está XAMPP activo?';
+        }
       });
 
       document.getElementById('tengo_cuenta').addEventListener('click', () => {
-      window.electronAPI.showLoginWindow();
+        window.electronAPI.showLoginWindow();
       });
     </script>
   </div>

@@ -6,6 +6,24 @@
 
 <body>
     <div class="container">
+        <!-- SECCIÓN SOLO PARA ADMINS -->
+        <div id="admin-panel" style="display: none;">
+            <div class="setting-group">
+                <details class="collapsible-card" open>
+                    <summary class="collapsible-header">
+                        Gestión de Trabajadores (Admin)
+                        <span class="dropdown-icon"></span>
+                    </summary>
+                    <div class="collapsible-content">
+                        <p>Activa o desactiva peluqueros para permitirles o denegarles el acceso.</p>
+                        <div id="barbers-list" class="barbers-list">
+                            <p>Cargando trabajadores...</p>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </div>
+
         <div class="setting-group">
             <details class="collapsible-card">
                 <summary class="collapsible-header">
@@ -13,20 +31,7 @@
                     <span class="dropdown-icon"></span>
                 </summary>
                 <div class="collapsible-content">
-                    <p>Hola</p>
-                </div>
-            </details>
-        </div>
-
-        <div class="setting-group">
-            <details class="collapsible-card">
-                <summary class="collapsible-header">
-                    Trabajadores
-                    <span class="dropdown-icon"></span>
-                </summary>
-                <div class="collapsible-content">
-                    <p>Configura los días y horas de apertura y cierre.</p>
-                    <p><em>Lunes a Viernes: 9:00 - 18:00</em></p>
+                    <p>Información básica de tu negocio.</p>
                 </div>
             </details>
         </div>
@@ -51,24 +56,130 @@
                     <span class="dropdown-icon"></span>
                 </summary>
                 <div class="collapsible-content">
-                    <p>Configura los días y horas de apertura y cierre.</p>
-                    <p><em>Lunes a Viernes: 9:00 - 18:00</em></p>
-                </div>
-            </details>
-        </div>
-
-        <div class="setting-group">
-            <details class="collapsible-card">
-                <summary class="collapsible-header">
-                    Gestión de Cuenta
-                    <span class="dropdown-icon"></span>
-                </summary>
-                <div class="collapsible-content">
-                    <p>Configura los días y horas de apertura y cierre.</p>
-                    <p><em>Lunes a Viernes: 9:00 - 18:00</em></p>
+                    <p>Idioma, notificaciones y tema visual.</p>
                 </div>
             </details>
         </div>
 
     </div>
+
+    <script>
+        (async function initConfig() {
+            const API_BASE = 'http://localhost/appcortes/api';
+            // Leemos la sesión global expuesta por general.html
+            const session  = window.appSession || JSON.parse(localStorage.getItem('session') || '{}');
+
+            if (session.rol === 'admin') {
+                document.getElementById('admin-panel').style.display = 'block';
+                loadBarbers();
+            }
+
+            async function loadBarbers() {
+                const listContainer = document.getElementById('barbers-list');
+                try {
+                    const res = await fetch(`${API_BASE}/barbers.php`, {
+                        method: 'GET',
+                        headers: { 'X-Admin-Email': session.email }
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        if (data.peluqueros.length === 0) {
+                            listContainer.innerHTML = '<p>No hay peluqueros registrados.</p>';
+                            return;
+                        }
+
+                        let html = '<table class="admin-table">';
+                        html += '<thead><tr><th>Nombre</th><th>Email</th><th>Estado</th></tr></thead><tbody>';
+                        
+                        data.peluqueros.forEach(b => {
+                            const checked = b.activo == 1 ? 'checked' : '';
+                            html += `
+                                <tr>
+                                    <td>${b.nombre}</td>
+                                    <td>${b.email}</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" ${checked} onchange="toggleBarber(${b.id}, this.checked)">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                        html += '</tbody></table>';
+                        listContainer.innerHTML = html;
+                    } else {
+                        listContainer.innerHTML = `<p style="color:red">Error: ${data.message}</p>`;
+                    }
+                } catch (err) {
+                    listContainer.innerHTML = '<p style="color:red">Error al conectar con la API.</p>';
+                }
+            }
+
+            // Función global para el onchange del checkbox
+            window.toggleBarber = async (id, isChecked) => {
+                try {
+                    const res = await fetch(`${API_BASE}/barbers.php`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'X-Admin-Email': session.email 
+                        },
+                        body: JSON.stringify({ id, activo: isChecked ? 1 : 0 })
+                    });
+                    const data = await res.json();
+                    if (!data.success) {
+                        alert('Error: ' + data.message);
+                        // Revertir el checkbox si falla? (Opcional, mejor recargar si es crítico)
+                    }
+                } catch (err) {
+                    alert('Error de conexión al cambiar estado.');
+                }
+            };
+        })();
+    </script>
+
+    <style>
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            color: var(--normal-text);
+        }
+        .admin-table th, .admin-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .admin-table th { font-weight: 600; color: var(--accent-color); }
+
+        /* Estilo Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #555;
+            transition: .4s;
+            border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px; width: 14px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #2ecc71; }
+        input:checked + .slider:before { transform: translateX(20px); }
+    </style>
 </body>

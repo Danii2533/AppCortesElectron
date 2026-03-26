@@ -19,6 +19,13 @@
                 </button>
             </div>
 
+            <!-- Info del usuario logueado -->
+            <div class="user-info" id="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="user-nombre">...</span>
+                <span id="user-rol" class="user-rol-badge"></span>
+            </div>
+
             <nav>
                 <a class="menu-item active" onclick="openSection('galeria')">
                     <img src="../../resources/camera.svg" alt="camara">
@@ -40,60 +47,128 @@
                     <span>Configuración</span>
                 </a>
             </nav>
+
+            <!-- Botón cerrar sesión -->
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </div>
         </aside>
-        
-        <!-- CONTENEDOR DONDE SE CARGA TODO -->
+
+        <!-- CONTENEDOR PRINCIPAL -->
         <main id="app">
         </main>
     </div>
 
     <script>
-        // Mostrar/ocultar sidebar
+        // ── Sesión ────────────────────────────────────────────
+        const sessionRaw = localStorage.getItem('session');
+        if (!sessionRaw) {
+            // No hay sesión → volver al login
+            window.electronAPI.showLoginWindow();
+        }
+
+        const session = JSON.parse(sessionRaw || '{}');
+
+        // Mostrar nombre y rol en el sidebar
+        document.getElementById('user-nombre').textContent = session.nombre || 'Usuario';
+        const rolBadge = document.getElementById('user-rol');
+        rolBadge.textContent = session.rol === 'admin' ? '★ Admin' : 'Peluquero';
+        rolBadge.classList.add(session.rol === 'admin' ? 'badge-admin' : 'badge-peluquero');
+
+        // Exponer sesión globalmente para que las sub-vistas puedan leerla
+        window.appSession = session;
+
+        // ── Cerrar sesión ─────────────────────────────────────
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('session');
+            window.electronAPI.showLoginWindow();
+        });
+
+        // ── Sidebar toggle ────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
-            const toggleButton = document.getElementById('toggle-sidebar-btn');
-            const appContainer = document.querySelector('.app-container');
+            const toggleButton  = document.getElementById('toggle-sidebar-btn');
+            const appContainer  = document.querySelector('.app-container');
 
             toggleButton.addEventListener('click', () => {
                 appContainer.classList.toggle('collapsed');
-
                 const icon = toggleButton.querySelector('i');
                 if (appContainer.classList.contains('collapsed')) {
-                    icon.classList.remove('fa-chevron-left');
-                    icon.classList.add('fa-chevron-right');
+                    icon.classList.replace('fa-chevron-left', 'fa-chevron-right');
                     toggleButton.setAttribute('aria-label', 'Mostrar menú');
                 } else {
-                    icon.classList.remove('fa-chevron-right');
-                    icon.classList.add('fa-chevron-left');
+                    icon.classList.replace('fa-chevron-right', 'fa-chevron-left');
                     toggleButton.setAttribute('aria-label', 'Ocultar menú');
                 }
             });
         });
 
-        // Función para cargar vistas externas
+        // ── Cargar secciones ──────────────────────────────────
         async function openSection(page) {
-
-            // Activar solo el botón actual
             document.querySelectorAll('.menu-item')
                 .forEach(item => item.classList.remove('active'));
 
-            const clickedItem = [...document.querySelectorAll('.menu-item')]
-                .find(btn => btn.getAttribute("onclick").includes(page));
-            clickedItem.classList.add('active');
+            const clicked = [...document.querySelectorAll('.menu-item')]
+                .find(btn => btn.getAttribute('onclick').includes(page));
+            if (clicked) clicked.classList.add('active');
 
-            // Cargar archivo externo
-            const html = await fetch(page + ".html").then(res => res.text());
+            const html = await fetch(page + '.html').then(res => res.text());
+            document.getElementById('app').innerHTML = html;
 
-            // Insertarlo en el contenedor
-            document.getElementById("app").innerHTML = html;
+            // Ejecutar <script> dentro del html cargado dinámicamente
+            document.getElementById('app').querySelectorAll('script').forEach(oldScript => {
+                const newScript = document.createElement('script');
+                newScript.textContent = oldScript.textContent;
+                oldScript.replaceWith(newScript);
+            });
         }
 
         // Página por defecto
-        openSection("galeria");
-
-        
+        openSection('galeria');
     </script>
 
-
+    <style>
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 8px;
+        }
+        .user-rol-badge {
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+        .badge-admin    { background: #f39c12; color: #000; }
+        .badge-peluquero { background: #2ecc71; color: #000; }
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 12px 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .logout-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: inherit;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover { background: rgba(255,255,255,0.1); }
+    </style>
 </body>
 
 </html>
