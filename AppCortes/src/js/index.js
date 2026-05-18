@@ -95,32 +95,8 @@ function createWindows() {
     app.quit();
   });
 
-  // ... (subVentanas sin cambios ya que no cargan rutas de archivos) ...
-  subWindow_galeria = new BrowserWindow({
-  parent: generalWindow,
-  modal: true,
-  show: false,
-  width: 400,
-  height: 300
-  });
-
-  subWindow_cliente = new BrowserWindow({
-  parent: generalWindow,
-  modal: true,
-  show: false,
-  width: 400,
-  height: 300
-  });
-
-  subWindow_cita = new BrowserWindow({
-  parent: generalWindow,
-  modal: true,
-  show: false,
-  width: 400,
-  height: 300
-  });
-
-
+  // Las ventanas modales (añadir corte, cliente, cita) se gestionan
+  // directamente con overlays CSS dentro de cada vista HTML.
 }
 
 // ... (Resto del código sin cambios) ...

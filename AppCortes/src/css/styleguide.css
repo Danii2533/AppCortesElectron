@@ -1,0 +1,598 @@
+/* ================= STYLE GUIDE ================= */
+:root {
+    --bg-body: #272727;
+    --bg-container: rgb(53, 53, 53);
+    --shadow-color: rgba(252, 252, 252, 0.1);
+    --btn-bg: #ffd900;
+    --btn-bg-hover: #8a8146;
+    --btn-text: #000;
+    --title-text: #fff;
+    --normal-text: #ccc;
+    --input-bg: #1e1e1e;
+    --input-border: #555;
+    --input-border-focus: #ffd900;
+    --success-text: #10a37f;
+    --error-text: #ff4f4f;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--title-text);
+    padding: 40px;
+    overflow-y: auto;
+}
+
+/* ================= LAYOUT ================= */
+.sg-section {
+    background-color: var(--bg-container);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.sg-section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--btn-bg);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sg-section-title svg {
+    width: 24px;
+    height: 24px;
+}
+
+.sg-section-desc {
+    font-size: 0.9rem;
+    color: var(--normal-text);
+    margin-bottom: 25px;
+    line-height: 1.5;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 15px;
+}
+
+/* ================= COLOR SWATCHES ================= */
+.sg-color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.sg-color-swatch {
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-body);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    transition: transform 0.2s;
+}
+
+.sg-color-swatch:hover {
+    transform: translateY(-3px);
+}
+
+.sg-color-preview {
+    height: 90px;
+    width: 100%;
+}
+
+.sg-color-info {
+    padding: 12px 15px;
+}
+
+.sg-color-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.sg-color-value {
+    font-size: 0.8rem;
+    color: var(--normal-text);
+    font-family: 'Courier New', monospace;
+}
+
+.sg-color-var {
+    font-size: 0.75rem;
+    color: var(--btn-bg);
+    font-family: 'Courier New', monospace;
+    margin-top: 2px;
+    opacity: 0.8;
+}
+
+/* ================= TYPOGRAPHY ================= */
+.sg-type-sample {
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: var(--bg-body);
+    border-radius: 8px;
+    border-left: 4px solid var(--btn-bg);
+}
+
+.sg-type-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--btn-bg);
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.sg-type-meta {
+    font-size: 0.8rem;
+    color: var(--normal-text);
+    margin-top: 5px;
+    font-family: 'Courier New', monospace;
+}
+
+/* ================= BUTTONS ================= */
+.sg-button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sg-button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.sg-button-label {
+    font-size: 0.75rem;
+    color: var(--normal-text);
+    font-family: 'Courier New', monospace;
+}
+
+/* Botones reales de la app */
+.upload-btn {
+    background-color: var(--btn-bg);
+    color: var(--bg-body);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.upload-btn:hover {
+    background-color: var(--btn-bg-hover);
+}
+
+.save-btn {
+    background-color: var(--btn-bg);
+    color: #000;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 217, 0, 0.3);
+}
+
+.cancel-btn {
+    background: transparent;
+    color: var(--normal-text);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cancel-btn:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.login-btn {
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+    background-color: var(--btn-bg-hover);
+}
+
+/* ================= FORM INPUTS ================= */
+.sg-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.sg-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.sg-input-group label {
+    font-size: 0.85em;
+    color: var(--normal-text);
+    margin-bottom: 6px;
+}
+
+.sg-input-group input,
+.sg-input-group select {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    outline: none;
+    transition: border 0.3s ease;
+    font-family: inherit;
+}
+
+.sg-input-group input:focus,
+.sg-input-group select:focus {
+    border-color: var(--input-border-focus);
+}
+
+.sg-input-group input::placeholder {
+    color: #888;
+}
+
+.sg-input-group input[type="time"] {
+    background: transparent;
+    border: 1px solid #444;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+/* ================= CARDS ================= */
+.sg-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.client-card {
+    background-color: var(--bg-body);
+    color: var(--title-text);
+    border-radius: 8px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border-left: 4px solid var(--btn-bg);
+}
+
+.client-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+}
+
+.client-card .tag {
+    font-size: 0.85rem;
+    color: var(--normal-text);
+    opacity: 0.8;
+    margin-bottom: 2px;
+}
+
+.cut-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: var(--bg-body);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 200px;
+}
+
+.cut-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+}
+
+.cut-card .card-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 15px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+}
+
+.cut-card .cut-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.cut-card .cut-tags {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--normal-text);
+    opacity: 0.8;
+}
+
+.appointment-card {
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    border-left: 4px solid #fff;
+    transition: transform 0.2s;
+}
+
+.appointment-card:hover {
+    transform: scale(1.02);
+}
+
+.appointment-card strong {
+    font-size: 1.1em;
+    margin-bottom: 2px;
+}
+
+.appointment-card span {
+    opacity: 0.85;
+    font-weight: 500;
+}
+
+/* ================= ICONS ================= */
+.sg-icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 20px;
+}
+
+.sg-icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    background: var(--bg-body);
+    border-radius: 8px;
+    transition: transform 0.2s, background 0.2s;
+    cursor: default;
+}
+
+.sg-icon-item:hover {
+    transform: translateY(-3px);
+    background: rgba(255,217,0,0.05);
+}
+
+.sg-icon-item svg,
+.sg-icon-item img {
+    width: 32px;
+    height: 32px;
+    filter: invert(1);
+}
+
+.sg-icon-item .sg-icon-name {
+    font-size: 0.8rem;
+    color: var(--normal-text);
+    text-align: center;
+}
+
+/* ================= MENU ITEM ================= */
+.sg-menu-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-width: 250px;
+    background: var(--bg-body);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.menu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--normal-text);
+    text-decoration: none;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: background-color 0.2s, color 0.2s;
+    cursor: pointer;
+}
+
+.menu-item img {
+    width: 28px;
+    height: 28px;
+    margin-right: 15px;
+    filter: invert(1);
+}
+
+.menu-item:hover:not(.active) {
+    background-color: rgba(255,255,255,0.05);
+    color: var(--title-text);
+}
+
+.menu-item.active {
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    font-weight: 750;
+}
+
+.menu-item.active img {
+    filter: brightness(0);
+}
+
+/* ================= MODAL DEMO ================= */
+.sg-modal-demo {
+    background: var(--bg-container);
+    padding: 25px;
+    border-radius: 12px;
+    width: 380px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    color: var(--title-text);
+}
+
+.sg-modal-demo h2 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: var(--btn-bg);
+}
+
+.sg-modal-demo .form-group {
+    margin-bottom: 15px;
+}
+
+.sg-modal-demo .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--normal-text);
+    font-size: 0.9em;
+}
+
+.sg-modal-demo .form-group input {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-body);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--title-text);
+    border-radius: 6px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.sg-modal-demo .form-group input:focus {
+    border-color: var(--btn-bg);
+}
+
+.sg-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* ================= FILE UPLOAD AREA ================= */
+.file-upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 30px;
+    border: 2px dashed rgba(255,255,255,0.15);
+    border-radius: 8px;
+    background: var(--bg-body);
+    color: var(--normal-text);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.file-upload-placeholder:hover {
+    border-color: var(--btn-bg);
+    background: rgba(255,217,0,0.05);
+}
+
+.file-upload-placeholder svg {
+    color: var(--btn-bg);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.file-upload-placeholder:hover svg {
+    opacity: 1;
+}
+
+/* ================= SPACING & SHADOWS ================= */
+.sg-spacing-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.sg-spacing-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.sg-shadow-box {
+    width: 140px;
+    height: 80px;
+    background: var(--bg-body);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--normal-text);
+}
+
+.sg-spacing-label {
+    font-size: 0.75rem;
+    color: var(--normal-text);
+    font-family: 'Courier New', monospace;
+    text-align: center;
+}
+
+/* ================= BORDER RADIUS ================= */
+.sg-radius-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.sg-radius-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.sg-radius-box {
+    width: 80px;
+    height: 80px;
+    background: var(--btn-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--btn-text);
+    font-weight: 700;
+}
+
+.sg-radius-label {
+    font-size: 0.75rem;
+    color: var(--normal-text);
+    font-family: 'Courier New', monospace;
+}

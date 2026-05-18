@@ -1,7 +1,7 @@
 /* ================= GALLERY GRID ================= */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
     padding-bottom: 20px;
 }
@@ -11,8 +11,14 @@
     overflow: hidden;
     border-radius: 8px;
     background-color: var(--bg-body);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cut-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
 }
 
 .cut-card img {
@@ -29,7 +35,7 @@
     left: 0;
     right: 0;
     padding: 10px 15px;
-    background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
     color: var(--title-text);
 }
 
@@ -44,4 +50,147 @@
     font-style: italic;
     color: var(--normal-text);
     opacity: 0.8;
+}
+
+/* ================= MODAL ================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background: var(--bg-container);
+    padding: 25px;
+    border-radius: 12px;
+    width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: scale(0.95);
+    transition: transform 0.2s;
+    color: var(--title-text);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: var(--btn-bg);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--normal-text);
+    font-size: 0.9em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-body);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--title-text);
+    border-radius: 6px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.form-group input:focus {
+    border-color: var(--btn-bg);
+}
+
+/* ================= FILE UPLOAD AREA ================= */
+.file-upload-area {
+    position: relative;
+}
+
+.file-upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 30px;
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    background: var(--bg-body);
+    color: var(--normal-text);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.file-upload-placeholder:hover {
+    border-color: var(--btn-bg);
+    background: rgba(255, 217, 0, 0.05);
+}
+
+.upload-icon {
+    color: var(--btn-bg);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.file-upload-placeholder:hover .upload-icon {
+    opacity: 1;
+}
+
+.image-preview {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--btn-bg);
+}
+
+/* ================= MODAL ACTIONS ================= */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cancel-btn {
+    background: transparent;
+    color: var(--normal-text);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
 }

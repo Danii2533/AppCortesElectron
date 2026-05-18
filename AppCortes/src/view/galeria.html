@@ -1,31 +1,163 @@
 <header class="main-header">
     <h1>Galeria De Cortes</h1>
-    <button class="upload-btn">Añadir Corte</button>
+    <button class="upload-btn" onclick="openCutModal()">Añadir Corte</button>
     <link rel="stylesheet" href="../css/galeria.css">
 </header>
-<section class="gallery-grid">
-            <div class="cut-card">
-                <img src="" alt="Corte Moderno">
-                <div class="card-info">
-                    <p class="cut-name">Corte Moderno</p>
-                    <p class="cut-tags">#degradado #hombres #estilo</p>
-                </div>
-            </div>
 
-            <div class="cut-card">
-                <img src="" alt="Corte Bob">
-                <div class="card-info">
-                    <p class="cut-name">Corte Bob</p>
-                    <p class="cut-tags">#bob #mujer #elegante</p>
-                </div>
-            </div>
-
-            <div class="cut-card">
-                <img src="" alt="Color Fantasía">
-                <div class="card-info">
-                    <p class="cut-name">Color Fantasía</p>
-                    <p class="cut-tags">#colorido #atrevido #fantasia</p>
-                </div>
-            </div>
+<section class="gallery-grid" id="gallery-container">
+    <!-- Renderizado dinámico por fetch -->
 </section>
 
+<!-- Modal Añadir Corte -->
+<div class="modal-overlay" id="cut-modal">
+    <div class="modal-content">
+        <h2>Añadir Nuevo Corte</h2>
+
+        <div class="form-group">
+            <label>Nombre del Corte *</label>
+            <input type="text" id="cut-name" placeholder="Ej. Corte Moderno">
+        </div>
+        <div class="form-group">
+            <label>Etiquetas</label>
+            <input type="text" id="cut-tags" placeholder="Ej. #degradado #hombres #estilo">
+        </div>
+        <div class="form-group">
+            <label>Imagen del Corte *</label>
+            <div class="file-upload-area" id="file-upload-area">
+                <input type="file" id="cut-image" accept="image/*" style="display:none;">
+                <div class="file-upload-placeholder" id="upload-placeholder" onclick="document.getElementById('cut-image').click()">
+                    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    <span>Haz clic para seleccionar una imagen</span>
+                </div>
+                <img id="image-preview" class="image-preview" style="display:none;">
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-btn cancel-btn" onclick="closeCutModal()">Cancelar</button>
+            <button class="upload-btn" onclick="saveCut()">Guardar Corte</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function initGaleria() {
+        const API_BASE = 'http://localhost/appcortes/api';
+        const galleryContainer = document.getElementById('gallery-container');
+        const modal = document.getElementById('cut-modal');
+        const fileInput = document.getElementById('cut-image');
+        const preview = document.getElementById('image-preview');
+        const placeholder = document.getElementById('upload-placeholder');
+        let selectedBase64 = null;
+
+        // Preview de imagen al seleccionar archivo
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                selectedBase64 = ev.target.result;
+                preview.src = selectedBase64;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        async function loadCuts() {
+            try {
+                const res = await fetch(`${API_BASE}/cortes.php`);
+                const data = await res.json();
+
+                if (data.success) {
+                    galleryContainer.innerHTML = '';
+                    if (data.cortes.length === 0) {
+                        galleryContainer.innerHTML = '<p style="color:var(--normal-text); padding: 20px;">No hay cortes registrados aún. Pulsa "Añadir Corte" para subir el primero.</p>';
+                        return;
+                    }
+
+                    data.cortes.forEach(corte => {
+                        const imgSrc = corte.imagen_path
+                            ? `../../resources/cortes_de_pelo/${corte.imagen_path}`
+                            : '';
+                        const card = `
+                            <div class="cut-card">
+                                <img src="${imgSrc}" alt="${corte.nombre}" onerror="this.style.display='none'">
+                                <div class="card-info">
+                                    <p class="cut-name">${corte.nombre}</p>
+                                    <p class="cut-tags">${corte.tags || ''}</p>
+                                </div>
+                            </div>
+                        `;
+                        galleryContainer.innerHTML += card;
+                    });
+                }
+            } catch (err) {
+                console.error('Error cargando cortes:', err);
+                galleryContainer.innerHTML = '<p style="color:red; padding: 20px;">Error de conexión con el servidor.</p>';
+            }
+        }
+
+        window.openCutModal = function () {
+            document.getElementById('cut-name').value = '';
+            document.getElementById('cut-tags').value = '';
+            fileInput.value = '';
+            preview.style.display = 'none';
+            placeholder.style.display = 'flex';
+            selectedBase64 = null;
+            modal.classList.add('active');
+            setTimeout(() => document.getElementById('cut-name').focus(), 100);
+        };
+
+        window.closeCutModal = function () {
+            modal.classList.remove('active');
+        };
+
+        window.saveCut = async function () {
+            const nombre = document.getElementById('cut-name').value.trim();
+            const tags = document.getElementById('cut-tags').value.trim();
+
+            if (!nombre) {
+                alert('El nombre del corte es obligatorio');
+                return;
+            }
+            if (!selectedBase64) {
+                alert('Selecciona una imagen para el corte');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/cortes.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: nombre,
+                        tags: tags,
+                        image_base64: selectedBase64
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    closeCutModal();
+                    loadCuts();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                alert('Error conectando con el servidor');
+            }
+        };
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeCutModal();
+        });
+
+        // Carga inicial
+        loadCuts();
+    })();
+</script>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ETHAN CUTS — Guía de Estilos</title>
+    <link rel="stylesheet" href="../css/styleguide.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <h1 style="font-size:2.2rem; margin-bottom:5px;">ETHAN CUTS — Guía de Estilos</h1>
+    <p style="color:var(--normal-text); margin-bottom:35px; font-size:0.95rem;">Referencia visual de todos los
+        componentes, colores, tipografía e iconos usados en la aplicación.</p>
+
+    <!-- ==================== 1. COLORES ==================== -->
+    <div class="sg-section">
+        <h2 class="sg-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 2a7 7 0 0 0 0 14 3.5 3.5 0 0 1 0 7 10 10 0 1 0 0-21z" />
+            </svg>
+            Paleta de Colores
+        </h2>
+        <p class="sg-section-desc">Variables CSS globales definidas en <code>:root</code> y utilizadas en toda la
+            aplicación.</p>
+        <div class="sg-color-grid">
+            <div class="sg-color-swatch">
+                <div class="sg-color-preview" style="background:#272727"></div>
+                <div class="sg-color-info">
+                    <div class="sg-color-name">Fondo Principal</div>
+                    <div class="sg-color-value">#272727</div>
+                </div>
+            </div>
+            <div class="sg-color-swatch">
+                <div class="sg-color-preview" style="background:#ffd900"></div>
+                <div class="sg-color-info">
+                    <div class="sg-color-name">Dorado Principal</div>
+                    <div class="sg-color-value">#ffd900</div>
+                </div>
+            </div>
+            <div class="sg-color-swatch">
+                <div class="sg-color-preview" style="background:#000"></div>
+                <div class="sg-color-info">
+                    <div class="sg-color-name">Texto Botón</div>
+                    <div class="sg-color-value">#000000</div>
+                </div>
+            </div>
+            <div class="sg-color-swatch">
+                <div class="sg-color-preview" style="background:#cccccc"></div>
+                <div class="sg-color-info">
+                    <div class="sg-color-name">Texto Normal</div>
+                    <div class="sg-color-value">#cccccc</div>
+                </div>
+            </div>
+            <div class="sg-color-swatch">
+                <div class="sg-color-preview" style="background:#555"></div>
+                <div class="sg-color-info">
+                    <div class="sg-color-name">Borde Input</div>
+                    <div class="sg-color-value">#555</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 2. TIPOGRAFÍA ==================== -->
+    <div class="sg-section">
+        <h2 class="sg-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="4 7 4 4 20 4 20 7" />
+                <line x1="9" y1="20" x2="15" y2="20" />
+                <line x1="12" y1="4" x2="12" y2="20" />
+            </svg>
+            Tipografía
+        </h2>
+        <p class="sg-section-desc">Familia tipográfica del sistema:
+            <code>-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif</code>
+        </p>
+
+        <div class="sg-type-sample">
+            <div class="sg-type-label">H1 — Encabezado de Página</div>
+            <div style="font-size:1.8rem; font-weight:500;">Galeria De Cortes</div>
+        </div>
+        <div class="sg-type-sample">
+            <div class="sg-type-label">H2 — Título de Modal / Sección</div>
+            <div style="font-size:1.4rem; font-weight:700;">Añadir Nuevo Cliente</div>
+        </div>
+        <div class="sg-type-sample">
+            <div class="sg-type-label">Body — Menú / Texto Principal</div>
+            <div style="font-size:0.95rem; font-weight:600; color:var(--normal-text);">Gestión de Clientes</div>
+        </div>
+        <div class="sg-type-sample">
+            <div class="sg-type-label">Small — Tags</div>
+            <div style="font-size:0.8rem; font-style:italic; color:var(--normal-text); opacity:0.8;">#degradado #hombres
+                #estilo</div>
+        </div>
+    </div>
+
+    <!-- ==================== 3. BOTONES ==================== -->
+    <div class="sg-section">
+        <h2 class="sg-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="8" width="18" height="8" rx="3" />
+            </svg>
+            Botones
+        </h2>
+        <p class="sg-section-desc">Todos los estilos de botón utilizados en la aplicación.</p>
+
+        <div class="sg-button-row">
+            <div class="sg-button-group"><button class="upload-btn">Añadir Corte</button></div>
+            <div class="sg-button-group"><button class="save-btn">Guardar</button></div>
+            <div class="sg-button-group"><button class="cancel-btn">Cancelar</button></div>
+            <div class="sg-button-group"><button class="login-btn">Iniciar Sesión</button></div>
+        </div>
+
+        <h3 style="font-size:1rem; margin:25px 0 15px; color:var(--normal-text);">Estados Hover</h3>
+        <div class="sg-button-row">
+            <div class="sg-button-group"><button class="upload-btn"
+                    style="background-color:var(--btn-bg-hover)">Hover</button></div>
+            <div class="sg-button-group"><button class="save-btn"
+                    style="transform:translateY(-2px); box-shadow:0 4px 10px rgba(255,217,0,0.3)">Hover</button></div>
+            <div class="sg-button-group"><button class="cancel-btn"
+                    style="background:rgba(255,255,255,0.05)">Hover</button></div>
+        </div>
+    </div>
+
+    <!-- ==================== 4. FORMULARIOS ==================== -->
+    <div class="sg-section">
+        <h2 class="sg-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <line x1="9" y1="9" x2="15" y2="9" />
+                <line x1="9" y1="13" x2="15" y2="13" />
+                <line x1="9" y1="17" x2="12" y2="17" />
+            </svg>
+            Formularios
+        </h2>
+        <p class="sg-section-desc">Campos de entrada, selectores y áreas de subida de archivo.</p>
+
+        <div class="sg-form-grid">
+            <div class="sg-input-group"><label>Input de Texto</label><input type="text" placeholder="Ej. Juan Pérez">
+            </div>
+            <div class="sg-input-group"><label>Input Email</label><input type="email" placeholder="Ej. juan@gmail.com">
+            </div>
+            <div class="sg-input-group"><label>Selector</label><select>
+                    <option>Corte Clásico</option>
+                    <option>Corte + Barba</option>
+                    <option>Tinte</option>
+                </select></div>
+            <div class="sg-input-group"><label>Input Time</label><input type="time" value="10:00"></div>
+        </div>
+
+        <h3 style="font-size:1rem; margin:25px 0 15px; color:var(--normal-text);">Zona de Subida de Archivo</h3>
+        <div style="max-width:400px;">
+            <div class="file-upload-placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                    <circle cx="12" cy="13" r="4" />
+                </svg>
+                <span>Haz clic para seleccionar una imagen</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 5. TARJETAS ==================== -->
+    <div class="sg-section">
+        <h2 class="sg-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="18" rx="2" />
+                <line x1="2" y1="9" x2="22" y2="9" />
+            </svg>
+            Tarjetas
+        </h2>
+        <p class="sg-section-desc">Componentes de tarjeta reutilizados en Clientes, Galería y Citas.</p>
+
+        <div class="sg-card-grid">
+            <div class="client-card">
+                <p style="font-size:1.1em; margin-bottom:5px;"><strong>Juan Pérez</strong></p>
+                <p class="tag">612 345 678</p>
+                <p class="tag">juan@gmail.com</p>
+                <p class="tag" style="margin-top:10px; font-weight:bold; opacity:1;">Última visita: 10/02/2025</p>
+            </div>
+
+            <div class="cut-card" style="background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);">
+                <div class="card-info">
+                    <p class="cut-name">Corte Moderno</p>
+                    <p class="cut-tags">#degradado #hombres #estilo</p>
+                </div>
+            </div>
+
+            <div class="appointment-card">
+                <strong>Ana Gómez</strong>
+                <span>Corte + Barba</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 6. ICONOS SVG ==================== -->
+    <div class="sg-section">
+        <h2 class="sg-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon
+                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            Iconos
+        </h2>
+        <p class="sg-section-desc">Iconos SVG almacenados en <code>/resources/</code> y usados en el sidebar y modales.
+        </p>
+
+        <div class="sg-icon-grid">
+            <div class="sg-icon-item"><img src="../../resources/camera.svg" alt="Galería"><span
+                    class="sg-icon-name">camera.svg<br>Galería</span></div>
+            <div class="sg-icon-item"><img src="../../resources/users.svg" alt="Clientes"><span
+                    class="sg-icon-name">users.svg<br>Clientes</span></div>
+            <div class="sg-icon-item"><img src="../../resources/calendar.svg" alt="Citas"><span
+                    class="sg-icon-name">calendar.svg<br>Citas</span></div>
+            <div class="sg-icon-item"><img src="../../resources/gear.svg" alt="Configuración"><span
+                    class="sg-icon-name">gear.svg<br>Configuración</span></div>
+            <div class="sg-icon-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                    <circle cx="12" cy="13" r="4" />
+                </svg>
+                <span class="sg-icon-name">Inline SVG<br>Upload Camera</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 7. MENÚ SIDEBAR ==================== -->
+    <div class="sg-section">
+        <h2 class="sg-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+            Menú Sidebar
+        </h2>
+        <p class="sg-section-desc">Items de navegación lateral con estados normal, hover y activo.</p>
+
+        <div class="sg-menu-demo">
+            <div class="menu-item active"><img src="../../resources/camera.svg" alt=""><span>Galería</span></div>
+            <div class="menu-item"><img src="../../resources/users.svg" alt=""><span>Clientes</span></div>
+            <div class="menu-item"><img src="../../resources/calendar.svg" alt=""><span>Citas</span></div>
+            <div class="menu-item"><img src="../../resources/gear.svg" alt=""><span>Configuración</span></div>
+        </div>
+    </div>
+
+    <!-- ==================== 8. MODAL ==================== -->
+    <div class="sg-section">
+        <h2 class="sg-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <line x1="9" y1="3" x2="9" y2="21" />
+            </svg>
+            Modal
+        </h2>
+        <p class="sg-section-desc">Ventanas modales flotantes usadas para añadir clientes, cortes y citas.</p>
+
+        <div class="sg-modal-demo">
+            <h2>Añadir Nuevo Cliente</h2>
+            <div class="form-group"><label>Nombre Completo *</label><input type="text" placeholder="Ej. Ana Gómez">
+            </div>
+            <div class="form-group"><label>Email (Opcional)</label><input type="email" placeholder="Ej. ana@gmail.com">
+            </div>
+            <div class="sg-modal-actions">
+                <button class="cancel-btn">Cancelar</button>
+                <button class="upload-btn">Guardar Cliente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 9. BORDES Y SOMBRAS ==================== -->
+    <div class="sg-section">
+        <h2 class="sg-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+            </svg>
+            Bordes, Radios y Sombras
+        </h2>
+        <p class="sg-section-desc">Valores de border-radius y box-shadow usados en los componentes.</p>
+
+        <h3 style="font-size:1rem; margin-bottom:15px; color:var(--normal-text);">Border Radius</h3>
+        <div class="sg-radius-grid">
+            <div class="sg-radius-item">
+                <div class="sg-radius-box" style="border-radius:4px;">4px</div>
+            </div>
+        </div>
+
+        <h3 style="font-size:1rem; margin:25px 0 15px; color:var(--normal-text);">Box Shadows</h3>
+        <div class="sg-spacing-row">
+            <div class="sg-spacing-item">
+                <div class="sg-shadow-box" style="box-shadow:0 4px 8px rgba(0,0,0,0.4);">Light</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
