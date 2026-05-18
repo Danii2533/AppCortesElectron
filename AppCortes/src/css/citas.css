@@ -1,0 +1,196 @@
+/* ================= CALENDAR GRID ================= */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: 80px repeat(6, 1fr);
+    background-color: var(--bg-body);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow-y: auto;
+    flex: 1;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+.calendar-cell {
+    border-right: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    min-height: 70px;
+    position: relative;
+    transition: background-color 0.2s;
+    padding: 5px;
+}
+
+/* Cabeceras de días */
+.calendar-day-header {
+    background-color: var(--bg-container);
+    text-align: center;
+    font-weight: bold;
+    padding: 15px 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    color: var(--title-text);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Columna de horas */
+.calendar-time-col {
+    background-color: var(--bg-container);
+    text-align: center;
+    font-weight: bold;
+    color: var(--normal-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 2px solid rgba(255,255,255,0.1);
+    position: sticky;
+    left: 0;
+    z-index: 5;
+}
+
+/* Esquina (intersecting headers) */
+.calendar-day-header:first-child, .calendar-time-col:first-child {
+    z-index: 15;
+}
+
+/* Celda vacía interactiva */
+.calendar-slot-empty {
+    cursor: pointer;
+}
+
+.calendar-slot-empty:hover {
+    background-color: rgba(255, 217, 0, 0.05);
+}
+
+/* Cita registrada */
+.calendar-slot-booked {
+    padding: 5px;
+}
+
+.appointment-card {
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    cursor: default;
+    border-left: 4px solid #fff;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.appointment-card:hover {
+    transform: scale(1.02);
+}
+
+.appointment-card strong {
+    font-size: 1.1em;
+    display: block;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.appointment-card span {
+    opacity: 0.85;
+    font-weight: 500;
+}
+
+/* ================= MODAL ================= */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background: var(--bg-container);
+    padding: 25px;
+    border-radius: 12px;
+    width: 380px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    transition: transform 0.2s;
+    color: var(--title-text);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--normal-text);
+    font-size: 0.9em;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-body);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--title-text);
+    border-radius: 6px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: var(--btn-bg);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cancel-btn {
+    background: transparent;
+    color: var(--normal-text);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.cancel-btn:hover {
+    background: rgba(255,255,255,0.05);
+}

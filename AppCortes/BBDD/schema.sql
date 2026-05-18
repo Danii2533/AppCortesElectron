@@ -151,8 +151,8 @@ INSERT INTO `cortes` (`nombre`, `tags`, `peluquero_id`) VALUES
 ('Corte Bob',      '#bob #mujer #elegante',        3),
 ('Color Fantasía', '#colorido #atrevido #fantasia',2);
 
--- Citas de ejemplo
-INSERT INTO `citas` (`cliente_id`, `peluquero_id`, `corte_id`, `fecha`, `hora`, `estado`) VALUES
-(1, 2, 1, '2025-03-28', '10:00:00', 'pendiente'),
-(2, 3, 2, '2025-03-28', '11:30:00', 'confirmada'),
-(3, 2, 3, '2025-03-29', '09:00:00', 'pendiente');
+-- Citas de ejemplo (Actualizadas para que salgan en la semana actual)
+INSERT INTO `citas` (`cliente_id`, `peluquero_id`, `corte_id`, `fecha`, `hora`, `estado`, `notas`) VALUES
+(1, 2, 1, '2026-05-18', '10:00:00', 'pendiente', 'Corte Clásico'),
+(2, 3, 2, '2026-05-18', '11:30:00', 'confirmada', 'Corte + Barba'),
+(3, 2, 3, '2026-05-19', '09:00:00', 'pendiente', 'Tinte / Color');

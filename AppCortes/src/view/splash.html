@@ -7,13 +7,22 @@
 </head>
 <body>
   <div class="splash-container">
-    <p>Cargando aplicación...</p>
+    <div class="logo-container">
+      <img src="../../resources/icono.png" alt="Ethan Cuts" class="logo">
+      <div class="glow-effect"></div>
+    </div>
+    
+    <h1 class="brand-title">ETHAN CUTS</h1>
+    <p class="brand-subtitle">PREMIUM BARBERSHOP</p>
 
-    <div class="progress-bar">
-      <div class="progress" id="progress"></div>
+    <div class="loader-wrapper">
+      <div class="progress-bar-bg">
+        <div class="progress" id="progress">
+          <div class="progress-glow"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Texto del archivo que se está cargando -->
     <p class="file-status" id="file-status">Iniciando...</p>
   </div>
 
@@ -21,39 +30,23 @@
     const progress = document.getElementById("progress");
     const fileStatus = document.getElementById("file-status");
 
-    const filesToLoad = [
-      "base de datos clientes...",
-      "estilos de la aplicación...",
-      "componentes gráficos...",
-      "iconos y recursos...",
-      "configuración de inicio...",
-      "módulos de seguridad...",
-      "conexión con MongoDB...",
-      "interfaz de usuario..."
-    ];
-
-    let loaded = 0;
-
-    function loadNextFile() {
-      if (loaded >= filesToLoad.length) {
-        fileStatus.textContent = "Carga completa";
+    // Escuchar el progreso real enviado desde el proceso principal (index.js)
+    window.electronAPI.onLoadingProgress((data) => {
+      // data tendrá { text: 'mensaje', percent: 50 }
+      if (data.text) {
+        fileStatus.textContent = data.text;
+      }
+      if (data.percent !== undefined) {
+        progress.style.width = `${data.percent}%`;
+      }
+      
+      // Cuando llegue a 100, avisar al main process que hemos terminado la animación de carga
+      if (data.percent >= 100) {
         setTimeout(() => {
           window.electronAPI.finishSplash();
-        }, 500);
-        return;
+        }, 800); // Pequeña pausa para que el usuario vea el 100%
       }
-
-      const fileName = filesToLoad[loaded];
-      fileStatus.textContent = `✔ ${fileName}`;
-
-      loaded++;
-      const percent = (loaded / filesToLoad.length) * 100;
-      progress.style.width = `${percent}%`;
-
-      setTimeout(loadNextFile, 300);
-    }
-
-    loadNextFile();
+    });
   </script>
 </body>
 </html>

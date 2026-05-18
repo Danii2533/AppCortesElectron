@@ -1,6 +1,6 @@
 <header class="main-header">
     <h1>Gestión de Clientes</h1>
-    <button class="upload-btn">Añadir Cliente</button>
+    <button class="upload-btn" onclick="openClientModal()">Añadir Cliente</button>
     <link rel="stylesheet" href="../css/clientes.css">
 </header>
 
@@ -9,20 +9,119 @@
         Lista de clientes registrados:
     </p>
 
-    <div class="client-list">
-        <div class="client-card">
-            <p><strong>Juan Pérez</strong></p>
-            <p class="tag">Visita reciente: 10/02/2025</p>
-        </div>
-
-        <div class="client-card">
-            <p><strong>Ana Gómez</strong></p>
-            <p class="tag">Visita reciente: 03/02/2025</p>
-        </div>
-
-        <div class="client-card">
-            <p><strong>Carlos Ruiz</strong></p>
-            <p class="tag">Visita reciente: 20/01/2025</p>
-        </div>
+    <div class="client-list" id="client-list-container">
+        <!-- Renderizado dinámico por fetch -->
     </div>
 </section>
+
+<!-- Modal Añadir Cliente -->
+<div class="modal-overlay" id="client-modal">
+    <div class="modal-content">
+        <h2>Añadir Nuevo Cliente</h2>
+
+        <div class="form-group">
+            <label>Nombre Completo *</label>
+            <input type="text" id="new-client-name" placeholder="Ej. Ana Gómez">
+        </div>
+        <div class="form-group">
+            <label>Email (Opcional)</label>
+            <input type="email" id="new-client-email" placeholder="Ej. ana@gmail.com">
+        </div>
+        <div class="form-group">
+            <label>Teléfono (Opcional)</label>
+            <input type="text" id="new-client-phone" placeholder="Ej. 600123456">
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-btn cancel-btn" onclick="closeClientModal()">Cancelar</button>
+            <button class="upload-btn" onclick="saveClient()">Guardar Cliente</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function initClientes() {
+        const API_BASE = 'http://localhost/appcortes/api';
+        const listContainer = document.getElementById('client-list-container');
+        const modal = document.getElementById('client-modal');
+
+        async function loadClients() {
+            try {
+                const res = await fetch(`${API_BASE}/clientes.php`);
+                const data = await res.json();
+
+                if (data.success) {
+                    listContainer.innerHTML = '';
+                    if (data.clientes.length === 0) {
+                        listContainer.innerHTML = '<p style="color:var(--normal-text);">No hay clientes registrados aún.</p>';
+                        return;
+                    }
+
+                    data.clientes.forEach(client => {
+                        const lastVisit = client.ultima_visita ? client.ultima_visita : 'Sin visitas previas';
+                        const card = `
+                            <div class="client-card">
+                                <p style="font-size: 1.1em; margin-bottom: 5px;"><strong>${client.nombre}</strong></p>
+                                ${client.telefono ? `<p class="tag"> ${client.telefono}</p>` : ''}
+                                ${client.email ? `<p class="tag"> ${client.email}</p>` : ''}
+                                <p class="tag" style="margin-top:10px; font-weight:bold; opacity: 1;">Última visita: ${lastVisit}</p>
+                            </div>
+                        `;
+                        listContainer.innerHTML += card;
+                    });
+                }
+            } catch (e) {
+                console.error("Error al cargar clientes", e);
+                listContainer.innerHTML = '<p style="color:red;">Error de conexión con el servidor (¿Está XAMPP encendido?).</p>';
+            }
+        }
+
+        window.openClientModal = function () {
+            document.getElementById('new-client-name').value = '';
+            document.getElementById('new-client-email').value = '';
+            document.getElementById('new-client-phone').value = '';
+            modal.classList.add('active');
+            setTimeout(() => document.getElementById('new-client-name').focus(), 100);
+        }
+
+        window.closeClientModal = function () {
+            modal.classList.remove('active');
+        }
+
+        window.saveClient = async function () {
+            const nombre = document.getElementById('new-client-name').value.trim();
+            const email = document.getElementById('new-client-email').value.trim();
+            const telefono = document.getElementById('new-client-phone').value.trim();
+
+            if (!nombre) {
+                alert("El nombre es obligatorio");
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/clientes.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, email, telefono })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    closeClientModal();
+                    loadClients();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                alert("Error conectando con el servidor");
+            }
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeClientModal();
+        });
+
+        // Inicializar carga desde BBDD
+        loadClients();
+    })();
+</script>

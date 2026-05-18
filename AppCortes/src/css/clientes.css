@@ -1,7 +1,7 @@
 /* ================= CLIENT CARDS ================= */
 .client-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
     padding-bottom: 20px;
 }
@@ -14,6 +14,7 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.5);
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
+    border-left: 4px solid var(--btn-bg);
 }
 
 .client-card:hover {
@@ -25,4 +26,100 @@
     font-size: 0.85rem;
     color: var(--normal-text);
     opacity: 0.8;
+    margin-bottom: 2px;
+}
+
+/* ================= MODAL ================= */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background: var(--bg-container);
+    padding: 25px;
+    border-radius: 12px;
+    width: 380px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    transition: transform 0.2s;
+    color: var(--title-text);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: var(--btn-bg);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--normal-text);
+    font-size: 0.9em;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-body);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--title-text);
+    border-radius: 6px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.form-group input:focus {
+    border-color: var(--btn-bg);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cancel-btn {
+    background: transparent;
+    color: var(--normal-text);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.cancel-btn:hover {
+    background: rgba(255,255,255,0.05);
 }

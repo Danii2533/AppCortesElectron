@@ -1,1 +1,217 @@
-<p>Hola</p>
+<header class="main-header">
+    <h1>Agenda de Citas</h1>
+    <div class="calendar-nav" style="display: flex; align-items: center;">
+        <button class="upload-btn" onclick="changeWeek(-1)">◀ Semana Anterior</button>
+        <span id="current-week-label" style="margin: 0 20px; font-weight: bold; font-size: 1.1rem; color: var(--title-text);"></span>
+        <button class="upload-btn" onclick="changeWeek(1)">Siguiente Semana ▶</button>
+    </div>
+    <link rel="stylesheet" href="../css/citas.css">
+</header>
+
+<section class="content-section" style="height: calc(100% - 80px); display: flex; flex-direction: column;">
+    <!-- Contenedor del grid -->
+    <div class="calendar-grid" id="calendar-grid">
+        <!-- Generado por JavaScript -->
+    </div>
+</section>
+
+<!-- Modal para Nueva Cita -->
+<div class="modal-overlay" id="appointment-modal">
+    <div class="modal-content">
+        <h2>Registrar Nueva Cita</h2>
+        <p id="modal-datetime-label" style="color: var(--btn-bg); margin-top: -10px; margin-bottom: 20px; font-weight: bold;"></p>
+        
+        <input type="hidden" id="modal-day">
+        <input type="hidden" id="modal-time">
+
+        <div class="form-group">
+            <label>Nombre del Cliente</label>
+            <input list="clients-datalist" type="text" id="client-name" placeholder="Ej. Juan Pérez" autocomplete="off">
+            <datalist id="clients-datalist"></datalist>
+        </div>
+
+        <div class="form-group">
+            <label>Servicio</label>
+            <select id="service-type">
+                <option value="Corte Clásico">Corte Clásico</option>
+                <option value="Corte + Barba">Corte + Barba</option>
+                <option value="Tinte / Color">Tinte / Color</option>
+                <option value="Lavado y Peinado">Lavado y Peinado</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Notas (Opcional)</label>
+            <input type="text" id="appointment-notes" placeholder="Ej. Pelo rizado..." autocomplete="off">
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-btn cancel-btn" onclick="closeModal()">Cancelar</button>
+            <button class="upload-btn" onclick="saveAppointment()">Confirmar Cita</button>
+        </div>
+    </div>
+</div>
+
+    <script>
+        (function initCalendar() {
+            const API_BASE = 'http://localhost/appcortes/api';
+            const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const startHour = 9;
+            const endHour = 18;
+
+            let currentDate = new Date();
+            const day = currentDate.getDay();
+            const diff = currentDate.getDate() - day + (day === 0 ? -6 : 1);
+            let startOfWeek = new Date(currentDate.setDate(diff));
+
+            let appointments = {};
+
+            function formatDateKey(date) {
+                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            }
+
+            async function loadAppointments() {
+                try {
+                    const res = await fetch(`${API_BASE}/citas.php`);
+                    const data = await res.json();
+                    if (data.success) {
+                        appointments = {};
+                        data.citas.forEach(cita => {
+                            // cita.hora viene como "09:00:00"
+                            const hour = parseInt(cita.hora.split(':')[0], 10);
+                            const slotKey = `${cita.fecha}_${hour}`;
+                            
+                            // Separar servicio de notas si usamos " - "
+                            const parts = cita.service ? cita.service.split(' - ') : ['Servicio'];
+                            
+                            appointments[slotKey] = { 
+                                client: cita.client, 
+                                service: parts[0] 
+                            };
+                        });
+
+                        // Rellenar combobox (datalist) de clientes
+                        if (data.clientes) {
+                            const datalist = document.getElementById('clients-datalist');
+                            if (datalist) {
+                                datalist.innerHTML = '';
+                                data.clientes.forEach(c => {
+                                    datalist.innerHTML += `<option value="${c.nombre}"></option>`;
+                                });
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error('Error cargando citas de la BD:', err);
+                }
+                renderCalendar();
+            }
+
+            window.renderCalendar = function() {
+                const grid = document.getElementById('calendar-grid');
+                if(!grid) return;
+                grid.innerHTML = '';
+
+                const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                document.getElementById('current-week-label').textContent = `${monthNames[startOfWeek.getMonth()]} ${startOfWeek.getFullYear()}`;
+
+                let headerHtml = `<div class="calendar-cell" style="background: var(--bg-body); border-bottom: 2px solid rgba(255,255,255,0.1);"></div>`;
+                
+                let currentDayLoop = new Date(startOfWeek);
+                for (let i = 0; i < 6; i++) {
+                    const dateStr = `${currentDayLoop.getDate()}/${currentDayLoop.getMonth() + 1}`;
+                    headerHtml += `<div class="calendar-cell calendar-day-header">${daysOfWeek[i]}<br><span style="font-size:0.8em; color:var(--normal-text); font-weight:normal;">${dateStr}</span></div>`;
+                    currentDayLoop.setDate(currentDayLoop.getDate() + 1);
+                }
+                grid.innerHTML += headerHtml;
+
+                for (let h = startHour; h < endHour; h++) {
+                    const timeLabel = `${h}:00`;
+                    let rowHtml = `<div class="calendar-cell calendar-time-col">${timeLabel}</div>`;
+
+                    currentDayLoop = new Date(startOfWeek);
+                    for (let d = 0; d < 6; d++) {
+                        const dateKey = formatDateKey(currentDayLoop);
+                        const slotKey = `${dateKey}_${h}`;
+                        
+                        if (appointments[slotKey]) {
+                            const apt = appointments[slotKey];
+                            rowHtml += `
+                                <div class="calendar-cell calendar-slot-booked">
+                                    <div class="appointment-card">
+                                        <strong>${apt.client}</strong>
+                                        <span>${apt.service}</span>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            rowHtml += `<div class="calendar-cell calendar-slot-empty" onclick="openModal('${dateKey}', ${h})"></div>`;
+                        }
+                        currentDayLoop.setDate(currentDayLoop.getDate() + 1);
+                    }
+                    grid.innerHTML += rowHtml;
+                }
+            };
+
+            window.changeWeek = function(offset) {
+                startOfWeek.setDate(startOfWeek.getDate() + (offset * 7));
+                renderCalendar();
+            };
+
+            const modal = document.getElementById('appointment-modal');
+
+            window.openModal = function(dateKey, hour) {
+                document.getElementById('modal-day').value = dateKey;
+                document.getElementById('modal-time').value = hour;
+                document.getElementById('modal-datetime-label').textContent = `Día: ${dateKey} - Hora: ${hour}:00`;
+                
+                document.getElementById('client-name').value = '';
+                document.getElementById('appointment-notes').value = '';
+                
+                modal.classList.add('active');
+                setTimeout(() => document.getElementById('client-name').focus(), 100);
+            };
+
+            window.closeModal = function() {
+                modal.classList.remove('active');
+            };
+
+            window.saveAppointment = async function() {
+                const client = document.getElementById('client-name').value.trim();
+                const service = document.getElementById('service-type').value;
+                const notes = document.getElementById('appointment-notes').value.trim();
+                const dateKey = document.getElementById('modal-day').value;
+                const hour = document.getElementById('modal-time').value;
+
+                if (!client) {
+                    alert("Por favor, introduce el nombre del cliente.");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/citas.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ client, service, notes, dateKey, hour })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        closeModal();
+                        loadAppointments();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                } catch (err) {
+                    alert('Error de conexión con el servidor (¿Está XAMPP encendido?).');
+                }
+            };
+
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) closeModal();
+            });
+
+            // Iniciar cargando desde la BD
+            loadAppointments();
+        })();
+    </script>

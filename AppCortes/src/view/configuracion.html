@@ -32,6 +32,21 @@
                 </summary>
                 <div class="collapsible-content">
                     <p>Información básica de tu negocio.</p>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Nombre del Salón</label>
+                            <input type="text" id="salon-name" placeholder="Ej. Ethan Cuts">
+                        </div>
+                        <div class="input-group">
+                            <label>Teléfono</label>
+                            <input type="text" id="salon-phone" placeholder="Ej. 600 123 456">
+                        </div>
+                        <div class="input-group full-width">
+                            <label>Dirección</label>
+                            <input type="text" id="salon-address" placeholder="Ej. Calle Principal, 123">
+                        </div>
+                    </div>
+                    <button class="save-btn" onclick="savePerfil()">Guardar Perfil</button>
                 </div>
             </details>
         </div>
@@ -44,7 +59,21 @@
                 </summary>
                 <div class="collapsible-content">
                     <p>Configura los días y horas de apertura y cierre.</p>
-                    <p><em>Lunes a Viernes: 9:00 - 18:00</em></p>
+                    <div class="schedule-grid">
+                        <div class="schedule-row">
+                            <label>Lunes a Viernes</label>
+                            <input type="time" id="time-lv-open" value="09:00">
+                            <span>a</span>
+                            <input type="time" id="time-lv-close" value="18:00">
+                        </div>
+                        <div class="schedule-row">
+                            <label>Sábados</label>
+                            <input type="time" id="time-s-open" value="10:00">
+                            <span>a</span>
+                            <input type="time" id="time-s-close" value="14:00">
+                        </div>
+                    </div>
+                    <button class="save-btn" onclick="saveHorario()">Guardar Horario</button>
                 </div>
             </details>
         </div>
@@ -52,18 +81,93 @@
         <div class="setting-group">
             <details class="collapsible-card">
                 <summary class="collapsible-header">
-                    Ajustes de Aplicacion
+                    Ajustes de Aplicación
                     <span class="dropdown-icon"></span>
                 </summary>
                 <div class="collapsible-content">
                     <p>Idioma, notificaciones y tema visual.</p>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Tema Visual</label>
+                            <select id="app-theme">
+                                <option value="dark">Oscuro (Por defecto)</option>
+                                <option value="light">Claro</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Notificaciones</label>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                                <label class="switch">
+                                    <input type="checkbox" id="app-notif" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                                <span style="font-size: 0.9em; color: #ccc;">Activar sonidos y alertas</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="save-btn" onclick="saveAjustes()">Guardar Ajustes</button>
                 </div>
             </details>
         </div>
-
     </div>
 
     <script>
+        // Funciones para guardar localmente
+        function savePerfil() {
+            const data = {
+                name: document.getElementById('salon-name').value,
+                phone: document.getElementById('salon-phone').value,
+                address: document.getElementById('salon-address').value
+            };
+            localStorage.setItem('salon_profile', JSON.stringify(data));
+            alert('Perfil guardado exitosamente.');
+        }
+
+        function saveHorario() {
+            const data = {
+                lv_open: document.getElementById('time-lv-open').value,
+                lv_close: document.getElementById('time-lv-close').value,
+                s_open: document.getElementById('time-s-open').value,
+                s_close: document.getElementById('time-s-close').value
+            };
+            localStorage.setItem('salon_schedule', JSON.stringify(data));
+            alert('Horario guardado exitosamente.');
+        }
+
+        function saveAjustes() {
+            const data = {
+                theme: document.getElementById('app-theme').value,
+                notif: document.getElementById('app-notif').checked
+            };
+            localStorage.setItem('app_settings', JSON.stringify(data));
+            alert('Ajustes guardados exitosamente.');
+            // Aplicar tema si se desea...
+        }
+
+        // Cargar datos previos al iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            const p = JSON.parse(localStorage.getItem('salon_profile'));
+            if(p) {
+                if(p.name) document.getElementById('salon-name').value = p.name;
+                if(p.phone) document.getElementById('salon-phone').value = p.phone;
+                if(p.address) document.getElementById('salon-address').value = p.address;
+            }
+
+            const s = JSON.parse(localStorage.getItem('salon_schedule'));
+            if(s) {
+                if(s.lv_open) document.getElementById('time-lv-open').value = s.lv_open;
+                if(s.lv_close) document.getElementById('time-lv-close').value = s.lv_close;
+                if(s.s_open) document.getElementById('time-s-open').value = s.s_open;
+                if(s.s_close) document.getElementById('time-s-close').value = s.s_close;
+            }
+
+            const a = JSON.parse(localStorage.getItem('app_settings'));
+            if(a) {
+                if(a.theme) document.getElementById('app-theme').value = a.theme;
+                if(a.notif !== undefined) document.getElementById('app-notif').checked = a.notif;
+            }
+        });
+
         (async function initConfig() {
             const API_BASE = 'http://localhost/appcortes/api';
             // Leemos la sesión global expuesta por general.html

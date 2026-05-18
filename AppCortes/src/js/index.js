@@ -136,7 +136,47 @@ function hideAllWindows() {
 
 app.whenReady().then(() => {
   createWindows();
+  
+  splashWindow.webContents.once('did-finish-load', () => {
+    performStartupChecks();
+  });
 });
+
+async function performStartupChecks() {
+  const sendProgress = (text, percent) => {
+    if (splashWindow && !splashWindow.isDestroyed()) {
+      splashWindow.webContents.send('loading-progress', { text, percent });
+    }
+  };
+
+  sendProgress('Iniciando entorno seguro...', 10);
+  await new Promise(r => setTimeout(r, 500));
+
+  sendProgress('Cargando base de datos locales...', 30);
+  await new Promise(r => setTimeout(r, 600));
+
+  sendProgress('Verificando API del servidor...', 60);
+  try {
+    const { net } = require('electron');
+    await new Promise((resolve) => {
+      const request = net.request('http://localhost/appcortes/api/config.php');
+      request.on('response', () => resolve());
+      request.on('error', (err) => {
+        console.log('Aviso: No se pudo conectar a la API local', err.message);
+        resolve(); 
+      });
+      request.end();
+    });
+  } catch (e) {
+    console.error(e);
+  }
+  await new Promise(r => setTimeout(r, 400));
+
+  sendProgress('Preparando interfaz principal...', 90);
+  await new Promise(r => setTimeout(r, 500));
+
+  sendProgress('Carga completada', 100);
+}
 
 
 // --- EVENTOS DE VENTANAS (sin cambios) --- //

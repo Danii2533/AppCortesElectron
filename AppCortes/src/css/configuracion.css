@@ -103,4 +103,82 @@ body {
     max-height: 1000px; /* valor alto suficiente para expandir */
 }
 
+/* FORMULARIOS Y AJUSTES */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+.full-width {
+    grid-column: 1 / -1;
+}
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+.input-group label {
+    font-size: 0.85em;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+.input-group input, .input-group select {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    outline: none;
+    transition: border 0.3s ease;
+}
+.input-group input:focus, .input-group select:focus {
+    border-color: var(--btn-bg);
+}
 
+.schedule-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+.schedule-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #1a1a1a;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #333;
+}
+.schedule-row label {
+    flex: 1;
+    font-weight: 500;
+}
+.schedule-row input[type="time"] {
+    background: transparent;
+    border: 1px solid #444;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    outline: none;
+    font-family: Arial, sans-serif;
+}
+.schedule-row input[type="time"]:focus {
+    border-color: var(--btn-bg);
+}
+
+.save-btn {
+    background-color: var(--btn-bg);
+    color: #000;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 217, 0, 0.3);
+}
