@@ -53,5 +53,5 @@ try {
     ]);
 
 } catch (Exception $e) {
-    jsonResponse(['success' => false, 'message' => 'Error en el servidor: ' . $e->getMessage()], 500);
+    jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
 }

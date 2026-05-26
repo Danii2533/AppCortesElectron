@@ -11,7 +11,7 @@ if ($method === 'GET') {
         $clientes = $stmt->fetchAll();
         jsonResponse(['success' => true, 'clientes' => $clientes], 200);
     } catch (Exception $e) {
-        jsonResponse(['success' => false, 'message' => 'Error al obtener clientes: ' . $e->getMessage()], 500);
+        jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
     }
 } 
 elseif ($method === 'POST') {
@@ -34,7 +34,7 @@ elseif ($method === 'POST') {
         
         jsonResponse(['success' => true, 'message' => 'Cliente añadido correctamente'], 201);
     } catch (Exception $e) {
-        jsonResponse(['success' => false, 'message' => 'Error al guardar cliente: ' . $e->getMessage()], 500);
+        jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
     }
 } 
 else {

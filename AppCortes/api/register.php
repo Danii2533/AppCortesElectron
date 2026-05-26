@@ -42,7 +42,7 @@ try {
     $rolStmt->execute();
     $rol = $rolStmt->fetch();
     if (!$rol) {
-        jsonResponse(['success' => false, 'message' => 'Rol "peluquero" no encontrado en la BD'], 500);
+        jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
     }
 
     $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
@@ -52,5 +52,5 @@ try {
     jsonResponse(['success' => true, 'message' => 'Registro exitoso. Ya puedes iniciar sesión.']);
 
 } catch (Exception $e) {
-    jsonResponse(['success' => false, 'message' => 'Error en el servidor: ' . $e->getMessage()], 500);
+    jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
 }

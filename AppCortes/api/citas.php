@@ -19,7 +19,7 @@ if ($method === 'GET') {
         
         jsonResponse(['success' => true, 'citas' => $citas, 'clientes' => $clientes], 200);
     } catch (Exception $e) {
-        jsonResponse(['success' => false, 'message' => 'Error al obtener citas: ' . $e->getMessage()], 500);
+        jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
     }
 } 
 elseif ($method === 'POST') {
@@ -70,9 +70,80 @@ elseif ($method === 'POST') {
         jsonResponse(['success' => true, 'message' => 'Cita registrada correctamente'], 201);
     } catch (Exception $e) {
         $db->rollBack();
-        jsonResponse(['success' => false, 'message' => 'Error al registrar cita: ' . $e->getMessage()], 500);
+        jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
     }
 } 
+elseif ($method === 'PUT') {
+    // Editar cita existente
+    $body = json_decode(file_get_contents('php://input'), true);
+    
+    $citaId     = intval($body['id'] ?? 0);
+    $clientName = trim($body['client'] ?? '');
+    $service    = trim($body['service'] ?? '');
+    $notes      = trim($body['notes'] ?? '');
+    $dateKey    = trim($body['dateKey'] ?? '');
+    $hour       = trim($body['hour'] ?? '');
+
+    if (!$citaId || !$clientName || !$dateKey || !$hour) {
+        jsonResponse(['success' => false, 'message' => 'Faltan datos requeridos'], 400);
+    }
+
+    $horaFormateada = sprintf("%02d:00:00", $hour);
+    $notasCompletas = $service . ($notes ? " - " . $notes : "");
+
+    try {
+        $db = getDB();
+        $db->beginTransaction();
+
+        // 1. Buscar o crear cliente
+        $stmt = $db->prepare("SELECT id FROM clientes WHERE nombre = ? LIMIT 1");
+        $stmt->execute([$clientName]);
+        $cliente = $stmt->fetch();
+
+        if ($cliente) {
+            $clienteId = $cliente['id'];
+        } else {
+            $stmt = $db->prepare("INSERT INTO clientes (nombre) VALUES (?)");
+            $stmt->execute([$clientName]);
+            $clienteId = $db->lastInsertId();
+        }
+
+        // 2. Actualizar cita
+        $stmt = $db->prepare(
+            "UPDATE citas SET cliente_id = ?, fecha = ?, hora = ?, notas = ? WHERE id = ?"
+        );
+        $stmt->execute([$clienteId, $dateKey, $horaFormateada, $notasCompletas, $citaId]);
+        
+        $db->commit();
+        jsonResponse(['success' => true, 'message' => 'Cita actualizada correctamente'], 200);
+    } catch (Exception $e) {
+        $db->rollBack();
+        jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
+    }
+}
+elseif ($method === 'DELETE') {
+    // Borrar cita
+    $body = json_decode(file_get_contents('php://input'), true);
+    $citaId = intval($body['id'] ?? 0);
+
+    if (!$citaId) {
+        jsonResponse(['success' => false, 'message' => 'ID de cita requerido'], 400);
+    }
+
+    try {
+        $db = getDB();
+        $stmt = $db->prepare("DELETE FROM citas WHERE id = ?");
+        $stmt->execute([$citaId]);
+
+        if ($stmt->rowCount() > 0) {
+            jsonResponse(['success' => true, 'message' => 'Cita eliminada correctamente'], 200);
+        } else {
+            jsonResponse(['success' => false, 'message' => 'No se pudo completar la operación'], 404);
+        }
+    } catch (Exception $e) {
+        jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
+    }
+}
 else {
     jsonResponse(['success' => false, 'message' => 'Método no permitido'], 405);
 }

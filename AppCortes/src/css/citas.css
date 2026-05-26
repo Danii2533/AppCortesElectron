@@ -194,3 +194,40 @@
 .cancel-btn:hover {
     background: rgba(255,255,255,0.05);
 }
+
+/* ================= DELETE BUTTON ================= */
+.delete-btn {
+    background: #e74c3c;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
+
+/* ================= BOOKED SLOT CLICKABLE ================= */
+.calendar-slot-booked {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.calendar-slot-booked .appointment-card {
+    position: relative;
+}
+
+.calendar-slot-booked .appointment-card::after {
+    content: '✏️';
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    font-size: 0.75em;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.calendar-slot-booked:hover .appointment-card::after {
+    opacity: 1;
+}

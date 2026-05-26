@@ -70,10 +70,10 @@ try {
         $target = $check->fetch();
 
         if (!$target) {
-            jsonResponse(['success' => false, 'message' => 'Usuario no encontrado'], 404);
+            jsonResponse(['success' => false, 'message' => 'No se pudo completar la operación'], 404);
         }
         if ($target['rol'] === 'admin') {
-            jsonResponse(['success' => false, 'message' => 'No puedes desactivar a un administrador'], 403);
+            jsonResponse(['success' => false, 'message' => 'Operación no permitida'], 403);
         }
 
         $stmt = $db->prepare('UPDATE usuarios SET activo = ? WHERE id = ?');
@@ -89,5 +89,5 @@ try {
     }
 
 } catch (Exception $e) {
-    jsonResponse(['success' => false, 'message' => 'Error en el servidor: ' . $e->getMessage()], 500);
+    jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
 }

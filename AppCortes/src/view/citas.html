@@ -15,14 +15,15 @@
     </div>
 </section>
 
-<!-- Modal para Nueva Cita -->
+<!-- Modal para Nueva / Editar Cita -->
 <div class="modal-overlay" id="appointment-modal">
     <div class="modal-content">
-        <h2>Registrar Nueva Cita</h2>
+        <h2 id="modal-title">Registrar Nueva Cita</h2>
         <p id="modal-datetime-label" style="color: var(--btn-bg); margin-top: -10px; margin-bottom: 20px; font-weight: bold;"></p>
         
         <input type="hidden" id="modal-day">
         <input type="hidden" id="modal-time">
+        <input type="hidden" id="modal-cita-id">
 
         <div class="form-group">
             <label>Nombre del Cliente</label>
@@ -46,8 +47,22 @@
         </div>
 
         <div class="modal-actions">
+            <button class="modal-btn delete-btn" id="delete-appointment-btn" onclick="deleteAppointment()" style="display:none;">🗑 Eliminar</button>
+            <div style="flex:1;"></div>
             <button class="modal-btn cancel-btn" onclick="closeModal()">Cancelar</button>
-            <button class="upload-btn" onclick="saveAppointment()">Confirmar Cita</button>
+            <button class="upload-btn" id="save-appointment-btn" onclick="saveAppointment()">Confirmar Cita</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación de borrado -->
+<div class="modal-overlay" id="confirm-delete-modal">
+    <div class="modal-content" style="width: 340px; text-align: center;">
+        <h2 style="color: #e74c3c;">¿Eliminar Cita?</h2>
+        <p style="color: var(--normal-text); margin-bottom: 20px;">Esta acción no se puede deshacer.</p>
+        <div class="modal-actions" style="justify-content: center;">
+            <button class="modal-btn cancel-btn" onclick="cancelDelete()">Cancelar</button>
+            <button class="modal-btn delete-btn" onclick="confirmDelete()">Sí, Eliminar</button>
         </div>
     </div>
 </div>
@@ -65,6 +80,7 @@
             let startOfWeek = new Date(currentDate.setDate(diff));
 
             let appointments = {};
+            let editingMode = false;
 
             function formatDateKey(date) {
                 return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -85,8 +101,10 @@
                             const parts = cita.service ? cita.service.split(' - ') : ['Servicio'];
                             
                             appointments[slotKey] = { 
+                                id: cita.id,
                                 client: cita.client, 
-                                service: parts[0] 
+                                service: parts[0],
+                                notes: parts[1] || ''
                             };
                         });
 
@@ -137,7 +155,7 @@
                         if (appointments[slotKey]) {
                             const apt = appointments[slotKey];
                             rowHtml += `
-                                <div class="calendar-cell calendar-slot-booked">
+                                <div class="calendar-cell calendar-slot-booked" onclick="openEditModal('${slotKey}')">
                                     <div class="appointment-card">
                                         <strong>${apt.client}</strong>
                                         <span>${apt.service}</span>
@@ -159,14 +177,50 @@
             };
 
             const modal = document.getElementById('appointment-modal');
+            const confirmModal = document.getElementById('confirm-delete-modal');
 
+            // Abrir modal para NUEVA cita
             window.openModal = function(dateKey, hour) {
+                editingMode = false;
+                document.getElementById('modal-title').textContent = 'Registrar Nueva Cita';
+                document.getElementById('save-appointment-btn').textContent = 'Confirmar Cita';
+                document.getElementById('delete-appointment-btn').style.display = 'none';
+                document.getElementById('modal-cita-id').value = '';
+
                 document.getElementById('modal-day').value = dateKey;
                 document.getElementById('modal-time').value = hour;
                 document.getElementById('modal-datetime-label').textContent = `Día: ${dateKey} - Hora: ${hour}:00`;
                 
                 document.getElementById('client-name').value = '';
+                document.getElementById('service-type').value = 'Corte Clásico';
                 document.getElementById('appointment-notes').value = '';
+                
+                modal.classList.add('active');
+                setTimeout(() => document.getElementById('client-name').focus(), 100);
+            };
+
+            // Abrir modal para EDITAR cita existente
+            window.openEditModal = function(slotKey) {
+                const apt = appointments[slotKey];
+                if (!apt) return;
+
+                editingMode = true;
+                const parts = slotKey.split('_');
+                const dateKey = parts[0];
+                const hour = parts[1];
+
+                document.getElementById('modal-title').textContent = 'Editar Cita';
+                document.getElementById('save-appointment-btn').textContent = 'Guardar Cambios';
+                document.getElementById('delete-appointment-btn').style.display = 'inline-flex';
+                document.getElementById('modal-cita-id').value = apt.id;
+
+                document.getElementById('modal-day').value = dateKey;
+                document.getElementById('modal-time').value = hour;
+                document.getElementById('modal-datetime-label').textContent = `Día: ${dateKey} - Hora: ${hour}:00`;
+                
+                document.getElementById('client-name').value = apt.client;
+                document.getElementById('service-type').value = apt.service;
+                document.getElementById('appointment-notes').value = apt.notes || '';
                 
                 modal.classList.add('active');
                 setTimeout(() => document.getElementById('client-name').focus(), 100);
@@ -182,6 +236,7 @@
                 const notes = document.getElementById('appointment-notes').value.trim();
                 const dateKey = document.getElementById('modal-day').value;
                 const hour = document.getElementById('modal-time').value;
+                const citaId = document.getElementById('modal-cita-id').value;
 
                 if (!client) {
                     alert("Por favor, introduce el nombre del cliente.");
@@ -189,10 +244,14 @@
                 }
 
                 try {
+                    const isEdit = editingMode && citaId;
                     const res = await fetch(`${API_BASE}/citas.php`, {
-                        method: 'POST',
+                        method: isEdit ? 'PUT' : 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ client, service, notes, dateKey, hour })
+                        body: JSON.stringify({ 
+                            id: isEdit ? parseInt(citaId) : undefined,
+                            client, service, notes, dateKey, hour 
+                        })
                     });
                     const data = await res.json();
                     
@@ -207,8 +266,45 @@
                 }
             };
 
+            // Eliminar cita — muestra confirmación
+            window.deleteAppointment = function() {
+                confirmModal.classList.add('active');
+            };
+
+            window.cancelDelete = function() {
+                confirmModal.classList.remove('active');
+            };
+
+            window.confirmDelete = async function() {
+                const citaId = document.getElementById('modal-cita-id').value;
+                if (!citaId) return;
+
+                try {
+                    const res = await fetch(`${API_BASE}/citas.php`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: parseInt(citaId) })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        confirmModal.classList.remove('active');
+                        closeModal();
+                        loadAppointments();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                } catch (err) {
+                    alert('Error de conexión con el servidor.');
+                }
+            };
+
             modal.addEventListener('click', (e) => {
                 if(e.target === modal) closeModal();
+            });
+
+            confirmModal.addEventListener('click', (e) => {
+                if(e.target === confirmModal) cancelDelete();
             });
 
             // Iniciar cargando desde la BD

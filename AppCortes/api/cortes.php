@@ -14,7 +14,7 @@ if ($method === 'GET') {
         $cortes = $stmt->fetchAll();
         jsonResponse(['success' => true, 'cortes' => $cortes], 200);
     } catch (Exception $e) {
-        jsonResponse(['success' => false, 'message' => 'Error al obtener cortes: ' . $e->getMessage()], 500);
+        jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
     }
 } 
 elseif ($method === 'POST') {
@@ -61,7 +61,7 @@ elseif ($method === 'POST') {
         
         jsonResponse(['success' => true, 'message' => 'Corte añadido correctamente', 'fileName' => $fileName], 201);
     } catch (Exception $e) {
-        jsonResponse(['success' => false, 'message' => 'Error al guardar corte: ' . $e->getMessage()], 500);
+        jsonResponse(['success' => false, 'message' => 'Error interno del servidor'], 500);
     }
 } 
 else {
