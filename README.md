@@ -1,6 +1,6 @@
-# 📦 Proyecto Electron — Documentación Completa
+# Proyecto Electron — Documentación Completa
 
-## 📝 Descripción General
+## Descripción General
 
 Este proyecto es una aplicación de escritorio construida con **Electron**, que integra un entorno web moderno con una base de datos local, diversos recursos estáticos y scripts para empaquetar la app de manera profesional.
 
@@ -8,7 +8,7 @@ Permite combinar tecnologías del ecosistema **JavaScript/TypeScript** con funci
 
 ---
 
-## 🚀 Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 ### Frontend & Lógica
 
@@ -36,7 +36,7 @@ Permite combinar tecnologías del ecosistema **JavaScript/TypeScript** con funci
 
 ---
 
-## 📁 Estructura Completa del Proyecto
+## Estructura Completa del Proyecto
 
 ```
 ElectronApp/
@@ -96,7 +96,7 @@ ElectronApp/
 
 ---
 
-## 🧱 Arquitectura del Proyecto
+## Arquitectura del Proyecto
 
 ### 1. Capa Principal (Main Process – Electron)
 
@@ -127,7 +127,7 @@ ElectronApp/
 
 ---
 
-## 🧪 Scripts Disponibles (desde package.json)
+## Scripts Disponibles (desde package.json)
 
 * `npm start` — Ejecuta Electron en modo desarrollo.
 * `npm run make` — Empaqueta la aplicación.
@@ -137,7 +137,7 @@ ElectronApp/
 
 ---
 
-## 📦 Empaquetado
+## Empaquetado
 
 El archivo `forge.config.js` gestiona:
 
@@ -148,7 +148,7 @@ El archivo `forge.config.js` gestiona:
 
 ---
 
-## 📚 Posibles Mejoras
+## Posibles Mejoras
 
 * Implementar tests automatizados (Jest / Vitest).
 * Añadir soporte a **SQLite** o **IndexedDB** si aún no se usa.
