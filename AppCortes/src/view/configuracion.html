@@ -112,7 +112,9 @@
     </div>
 
     <script>
-        // Funciones para guardar localmente
+        // --- GUARDADO LOCAL ---
+        // Estas opciones (Perfil, Horario, Ajustes) las guardo directamente en LocalStorage para no tener que crear tablas
+        // adicionales en la base de datos para cosas que solo afectan a este ordenador concreto del salón.
         function savePerfil() {
             const data = {
                 name: document.getElementById('salon-name').value,
@@ -141,10 +143,10 @@
             };
             localStorage.setItem('app_settings', JSON.stringify(data));
             alert('Ajustes guardados exitosamente.');
-            // Aplicar tema si se desea...
+            // Aquí se podría meter lógica para cambiar el CSS global si en el futuro añado tema claro.
         }
 
-        // Cargar datos previos al iniciar
+        // Cargar datos previos de los LocalStorage en los inputs al abrir la pestaña.
         window.addEventListener('DOMContentLoaded', () => {
             const p = JSON.parse(localStorage.getItem('salon_profile'));
             if(p) {
@@ -168,11 +170,14 @@
             }
         });
 
+        // --- LÓGICA DE ADMINISTRADOR ---
         window.addEventListener('DOMContentLoaded', async () => {
             const API_BASE = 'http://localhost/appcortes/api';
-            // Leemos la sesión global expuesta por general.html
+            // Leemos la sesión global expuesta por general.html (o el localStorage)
+            // Aquí sé si el usuario actual es "admin" o solo un peluquero normal.
             const session  = window.appSession || JSON.parse(localStorage.getItem('session') || '{}');
 
+            // Si es admin, le desbloqueo el panel secreto para ver y activar/desactivar peluqueros.
             if (session.rol === 'admin') {
                 document.getElementById('admin-panel').style.display = 'block';
                 loadBarbers();
@@ -181,6 +186,8 @@
             async function loadBarbers() {
                 const listContainer = document.getElementById('barbers-list');
                 try {
+                    // Pido la lista, mandando por seguridad la cabecera 'X-Admin-Email' 
+                    // para que el backend compruebe que mi sesión es legítima.
                     const res = await fetch(`${API_BASE}/barbers.php`, {
                         method: 'GET',
                         headers: { 'X-Admin-Email': session.email }
@@ -193,6 +200,7 @@
                             return;
                         }
 
+                        // Pinto una tabla con los peluqueros
                         let html = '<table class="admin-table">';
                         html += '<thead><tr><th>Nombre</th><th>Email</th><th>Estado</th></tr></thead><tbody>';
                         
@@ -203,6 +211,7 @@
                                     <td>${b.nombre}</td>
                                     <td>${b.email}</td>
                                     <td>
+                                        <!-- Un interruptor (switch) chulo para activarlos -->
                                         <label class="switch">
                                             <input type="checkbox" ${checked} onchange="toggleBarber(${b.id}, this.checked)">
                                             <span class="slider round"></span>
@@ -221,11 +230,11 @@
                 }
             }
 
-            // Función global para el onchange del checkbox
+            // Función que salta cuando le doy al interruptor para activar/desactivar un usuario.
             window.toggleBarber = async (id, isChecked) => {
                 try {
                     const res = await fetch(`${API_BASE}/barbers.php`, {
-                        method: 'POST',
+                        method: 'POST', // En realidad la API de barbers actúa de endpoint multiuso. Uso POST para actualizar estado.
                         headers: { 
                             'Content-Type': 'application/json',
                             'X-Admin-Email': session.email 
@@ -235,7 +244,6 @@
                     const data = await res.json();
                     if (!data.success) {
                         alert('Error: ' + data.message);
-                        // Revertir el checkbox si falla? (Opcional, mejor recargar si es crítico)
                     }
                 } catch (err) {
                     alert('Error de conexión al cambiar estado.');

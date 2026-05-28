@@ -30,21 +30,23 @@
     const progress = document.getElementById("progress");
     const fileStatus = document.getElementById("file-status");
 
-    // Escuchar el progreso real enviado desde el proceso principal (index.js)
+    // Escucho los mensajes de progreso que me manda el proceso principal (index.js).
+    // Así la barra de carga es real o simulada pero sincronizada con las comprobaciones de backend.
     window.electronAPI.onLoadingProgress((data) => {
-      // data tendrá { text: 'mensaje', percent: 50 }
+      // Me llega un objeto 'data' con { text: 'mensaje', percent: 50 }
       if (data.text) {
-        fileStatus.textContent = data.text;
+        fileStatus.textContent = data.text; // Actualizo el texto que lee el usuario
       }
       if (data.percent !== undefined) {
-        progress.style.width = `${data.percent}%`;
+        progress.style.width = `${data.percent}%`; // Estiro la barra css
       }
       
-      // Cuando llegue a 100, avisar al main process que hemos terminado la animación de carga
+      // Cuando llego al 100%, le aviso a main.js (index.js) que la animación ya acabó
       if (data.percent >= 100) {
         setTimeout(() => {
+          // Disparo el evento 'splash-finished' para que me cierre y muestre el login
           window.electronAPI.finishSplash();
-        }, 800); // Pequeña pausa para que el usuario vea el 100%
+        }, 800); // Le doy una pequeña pausa de 800ms para que al usuario le dé tiempo a ver que llegó al 100% y se sienta fluido.
       }
     });
   </script>

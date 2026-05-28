@@ -1,3 +1,5 @@
+/* ================= VARIABLES ================= */
+/* Utilizo variables para mantener la consistencia de los colores oscuros y el tono dorado en la pantalla de login. */
 :root {
   --bg-body: #272727;
   --bg-container: rgb(53, 53, 53);
@@ -14,10 +16,11 @@
 
   --title-text: #ffffff;
   --normal-text: #ccc;
-  --success-text: #10a37f;
-  --error-text: #ff4f4f;
+  --success-text: #10a37f; /* Verde para login correcto */
+  --error-text: #ff4f4f;   /* Rojo para contraseña incorrecta */
 }
 
+/* ================= RESETEO GLOBAL ================= */
 * {
   box-sizing: border-box;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

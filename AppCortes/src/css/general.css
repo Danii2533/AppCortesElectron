@@ -1,10 +1,11 @@
 /* ================= VARIABLES ================= */
+/* Defino aquí las variables globales (colores principales) para poder cambiarlos fácilmente en un solo sitio si alguna vez decido cambiar el tema visual de la aplicación. */
 :root {
     --bg-body: #272727;
     --bg-container: rgb(53, 53, 53);
     --shadow-color: rgba(252, 252, 252, 0.1);
 
-    /*Boton Principal*/
+    /* Botón Principal - Uso el dorado de la marca */
     --btn-bg: #ffd900;
     --btn-bg-hover: #8a8146;
     --btn-text: #000;

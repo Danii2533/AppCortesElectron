@@ -1,6 +1,8 @@
 /* ================= CLIENT CARDS ================= */
+/* Utilizo CSS Grid con auto-fill para que las tarjetas de los clientes sean totalmente responsive. */
 .client-list {
     display: grid;
+    /* Cada tarjeta mide mínimo 250px, si hay espacio caben más por fila. */
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
     padding-bottom: 20px;

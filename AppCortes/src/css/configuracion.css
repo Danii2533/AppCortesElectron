@@ -1,3 +1,4 @@
+/* Aquí defino las variables específicas de configuración, mezclando el tema oscuro con nuestro dorado */
 :root {
     --bg-color: #202020; /* Fondo principal oscuro */
     --card-color: #333333; /* Color de las tarjetas/desplegables */

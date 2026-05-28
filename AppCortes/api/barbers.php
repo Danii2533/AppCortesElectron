@@ -2,18 +2,18 @@
 // =============================================
 // GET  /api/barbers.php   → lista peluqueros (solo admin)
 // POST /api/barbers.php   → activa/desactiva peluquero (solo admin)
-//   Body POST: { "id": 5, "activo": 0 }
-//   Header requerido: X-Admin-Email
 // =============================================
 require_once __DIR__ . '/config.php';
 
+// He creado esta función de middleware manual para asegurarme de que solo los administradores puedan hacer peticiones aquí.
+// El frontend tiene que enviarme el email del admin en las cabeceras (X-Admin-Email) para comprobar que tiene permiso.
 function checkAdmin(): void {
     $email = $_SERVER['HTTP_X_ADMIN_EMAIL'] ?? '';
     if ($email === '') {
         jsonResponse(['success' => false, 'message' => 'No autorizado'], 401);
     }
     $db   = getDB();
-    // JOIN con roles para verificar por nombre, no por id hardcodeado
+    // Hago un JOIN con roles para verificar que el usuario asociado a ese email está activo y es 'admin'.
     $stmt = $db->prepare(
         'SELECT u.id FROM usuarios u
          INNER JOIN roles r ON r.id = u.rol_id
@@ -21,6 +21,7 @@ function checkAdmin(): void {
          LIMIT 1'
     );
     $stmt->execute([$email]);
+    // Si no es admin o no existe, le cierro la puerta devolviendo un 403 Forbidden.
     if (!$stmt->fetch()) {
         jsonResponse(['success' => false, 'message' => 'Acceso denegado'], 403);
     }
@@ -31,9 +32,10 @@ try {
 
     if ($method === 'GET') {
         // ----------------------------------------
-        // Lista todos los peluqueros con su rol
+        // Si la petición es GET, devuelvo la lista de todos los peluqueros.
         // ----------------------------------------
-        checkAdmin();
+        checkAdmin(); // Primero compruebo que es un admin.
+        
         $db   = getDB();
         $stmt = $db->prepare(
             'SELECT u.id, u.nombre, u.email, u.activo, u.creado_en, r.nombre AS rol
@@ -47,9 +49,10 @@ try {
 
     } elseif ($method === 'POST') {
         // ----------------------------------------
-        // Activar / Desactivar un peluquero
+        // Si la petición es POST, actualizo el estado (activo/inactivo) de un peluquero.
         // ----------------------------------------
         checkAdmin();
+        
         $body   = json_decode(file_get_contents('php://input'), true);
         $id     = (int)($body['id']     ?? 0);
         $activo = (int)($body['activo'] ?? 0);
@@ -60,7 +63,7 @@ try {
 
         $db = getDB();
 
-        // Proteger: no se puede desactivar a un admin
+        // Antes de nada, me aseguro de que no están intentando desactivar a otro administrador.
         $check = $db->prepare(
             'SELECT r.nombre AS rol FROM usuarios u
              INNER JOIN roles r ON r.id = u.rol_id
@@ -73,9 +76,10 @@ try {
             jsonResponse(['success' => false, 'message' => 'No se pudo completar la operación'], 404);
         }
         if ($target['rol'] === 'admin') {
-            jsonResponse(['success' => false, 'message' => 'Operación no permitida'], 403);
+            jsonResponse(['success' => false, 'message' => 'Operación no permitida'], 403); // ¡No puedes tocar a los admin!
         }
 
+        // Si pasa todas las validaciones, procedo a actualizar su estado.
         $stmt = $db->prepare('UPDATE usuarios SET activo = ? WHERE id = ?');
         $stmt->execute([$activo ? 1 : 0, $id]);
 

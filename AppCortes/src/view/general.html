@@ -64,30 +64,34 @@
 
     <script>
         // ── Sesión ────────────────────────────────────────────
+        // Primero compruebo si el usuario realmente ha iniciado sesión.
         const sessionRaw = localStorage.getItem('session');
         if (!sessionRaw) {
-            // No hay sesión → volver al login
+            // Si intenta saltarse el login abriendo esta ventana de alguna forma, lo devuelvo al inicio.
             window.electronAPI.showLoginWindow();
         }
 
         const session = JSON.parse(sessionRaw || '{}');
 
-        // Mostrar nombre y rol en el sidebar
+        // Pinto el nombre y el rol en el sidebar lateral usando los datos del localStorage.
         document.getElementById('user-nombre').textContent = session.nombre || 'Usuario';
         const rolBadge = document.getElementById('user-rol');
         rolBadge.textContent = session.rol === 'admin' ? '★ Admin' : 'Peluquero';
         rolBadge.classList.add(session.rol === 'admin' ? 'badge-admin' : 'badge-peluquero');
 
-        // Exponer sesión globalmente para que las sub-vistas puedan leerla
+        // Guardo la sesión en una variable global 'window.appSession'. 
+        // Esto me permite acceder a los datos del usuario (como su ID o rol) desde los scripts de las otras páginas.
         window.appSession = session;
 
         // ── Cerrar sesión ─────────────────────────────────────
         document.getElementById('logout-btn').addEventListener('click', () => {
+            // Borro el token/sesión local y lo mando al login.
             localStorage.removeItem('session');
             window.electronAPI.showLoginWindow();
         });
 
         // ── Sidebar toggle ────────────────────────────────────
+        // Lógica para el botón de colapsar y expandir el menú lateral (hace que la app se vea más limpia).
         document.addEventListener('DOMContentLoaded', () => {
             const toggleButton  = document.getElementById('toggle-sidebar-btn');
             const appContainer  = document.querySelector('.app-container');
@@ -105,19 +109,26 @@
             });
         });
 
-        // ── Cargar secciones ──────────────────────────────────
+        // ── Cargar secciones (SPA) ──────────────────────────────────
+        // He creado esta función para simular un comportamiento de Single Page Application (SPA).
+        // En lugar de navegar a otras páginas y perder el estado de Electron, cargo el HTML dentro de la etiqueta <main id="app">.
         async function openSection(page) {
+            // Quito la clase 'active' de todos los botones del menú.
             document.querySelectorAll('.menu-item')
                 .forEach(item => item.classList.remove('active'));
 
+            // Se la pongo al que acaban de clickar.
             const clicked = [...document.querySelectorAll('.menu-item')]
                 .find(btn => btn.getAttribute('onclick').includes(page));
             if (clicked) clicked.classList.add('active');
 
+            // Hago fetch del archivo HTML correspondiente.
             const html = await fetch(page + '.html').then(res => res.text());
             document.getElementById('app').innerHTML = html;
 
-            // Ejecutar <script> dentro del html cargado dinámicamente
+            // ESTO ES CLAVE: Cuando inyectas HTML con innerHTML, los <script> no se ejecutan por seguridad.
+            // Para solucionarlo, agarro todos los <script> inyectados, los clono en nuevos elementos de tipo script, y los reemplazo.
+            // Así el navegador los interpreta y ejecuta mi código JS de las sub-vistas.
             document.getElementById('app').querySelectorAll('script').forEach(oldScript => {
                 const newScript = document.createElement('script');
                 newScript.textContent = oldScript.textContent;
@@ -125,7 +136,7 @@
             });
         }
 
-        // Página por defecto
+        // Al iniciar la app, abro la galería por defecto.
         openSection('galeria');
     </script>
 

@@ -1,4 +1,5 @@
 /* ================= STYLE GUIDE ================= */
+/* Esta es mi hoja de estilos maestra para la Guía de Estilos. Aquí repito algunas variables para que el archivo sea independiente y pueda mostrarse correctamente. */
 :root {
     --bg-body: #272727;
     --bg-container: rgb(53, 53, 53);

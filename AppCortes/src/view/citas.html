@@ -68,24 +68,32 @@
 </div>
 
     <script>
+        // Aquí empieza la magia del calendario de citas.
         document.addEventListener('DOMContentLoaded', function() {
             const API_BASE = 'http://localhost/appcortes/api';
+            // Mi calendario muestra 6 días, de lunes a sábado.
             const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            // Horario de trabajo: de 09:00 a 18:00
             const startHour = 9;
             const endHour = 18;
 
+            // Uso la fecha actual para saber en qué semana estamos.
             let currentDate = new Date();
-            const day = currentDate.getDay();
+            const day = currentDate.getDay(); // 0 = domingo, 1 = lunes, etc.
+            // Calculo el lunes de la semana actual restando los días que han pasado
             const diff = currentDate.getDate() - day + (day === 0 ? -6 : 1);
             let startOfWeek = new Date(currentDate.setDate(diff));
 
+            // Guardo en memoria (diccionario) las citas que me devuelve el backend
             let appointments = {};
-            let editingMode = false;
+            let editingMode = false; // Bandera para saber si guardo una cita nueva o modifico una.
 
+            // Función auxiliar que he creado para convertir una fecha de JS en un string "YYYY-MM-DD" que entiende MySQL
             function formatDateKey(date) {
                 return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             }
 
+            // Pide al servidor todas las citas.
             async function loadAppointments() {
                 try {
                     const res = await fetch(`${API_BASE}/citas.php`);
@@ -93,13 +101,14 @@
                     if (data.success) {
                         appointments = {};
                         data.citas.forEach(cita => {
-                            // cita.hora viene como "09:00:00"
+                            // En BD guardo "09:00:00", pero para mi grid me interesa solo el "9"
                             const hour = parseInt(cita.hora.split(':')[0], 10);
-                            const slotKey = `${cita.fecha}_${hour}`;
+                            const slotKey = `${cita.fecha}_${hour}`; // Llave única: "2024-05-15_9"
                             
-                            // Separar servicio de notas si usamos " - "
+                            // Separar servicio de notas. En PHP lo concateno con " - "
                             const parts = cita.service ? cita.service.split(' - ') : ['Servicio'];
                             
+                            // Lo meto en el diccionario usando el slotKey como índice rápido
                             appointments[slotKey] = { 
                                 id: cita.id,
                                 client: cita.client, 
@@ -108,7 +117,7 @@
                             };
                         });
 
-                        // Rellenar combobox (datalist) de clientes
+                        // También lleno el 'datalist' (el autocompletado del HTML) para elegir clientes rápido.
                         if (data.clientes) {
                             const datalist = document.getElementById('clients-datalist');
                             if (datalist) {
@@ -122,19 +131,24 @@
                 } catch (err) {
                     console.error('Error cargando citas de la BD:', err);
                 }
+                // Una vez cargadas las citas en memoria, reconstruyo la tabla.
                 renderCalendar();
             }
 
+            // Esta función pinta toda la cuadrícula (el grid CSS) del calendario
             window.renderCalendar = function() {
                 const grid = document.getElementById('calendar-grid');
                 if(!grid) return;
-                grid.innerHTML = '';
+                grid.innerHTML = ''; // Limpio lo viejo
 
                 const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                // Actualizo el título central con el mes actual que estoy viendo
                 document.getElementById('current-week-label').textContent = `${monthNames[startOfWeek.getMonth()]} ${startOfWeek.getFullYear()}`;
 
+                // Primera celda vacía (esquina superior izquierda)
                 let headerHtml = `<div class="calendar-cell" style="background: var(--bg-body); border-bottom: 2px solid rgba(255,255,255,0.1);"></div>`;
                 
+                // Pinto la fila de cabeceras (Lunes 14/5, Martes 15/5...)
                 let currentDayLoop = new Date(startOfWeek);
                 for (let i = 0; i < 6; i++) {
                     const dateStr = `${currentDayLoop.getDate()}/${currentDayLoop.getMonth() + 1}`;
@@ -143,15 +157,18 @@
                 }
                 grid.innerHTML += headerHtml;
 
+                // Ahora pinto cada fila de horas, de 9 a 18h
                 for (let h = startHour; h < endHour; h++) {
                     const timeLabel = `${h}:00`;
-                    let rowHtml = `<div class="calendar-cell calendar-time-col">${timeLabel}</div>`;
+                    let rowHtml = `<div class="calendar-cell calendar-time-col">${timeLabel}</div>`; // Columna de la hora
 
                     currentDayLoop = new Date(startOfWeek);
+                    // Para cada hora, pinto las 6 celdas de los días de la semana
                     for (let d = 0; d < 6; d++) {
                         const dateKey = formatDateKey(currentDayLoop);
-                        const slotKey = `${dateKey}_${h}`;
+                        const slotKey = `${dateKey}_${h}`; // "2024-05-15_9"
                         
+                        // Si hay cita en el diccionario para este hueco, pongo la cajita de ocupado
                         if (appointments[slotKey]) {
                             const apt = appointments[slotKey];
                             rowHtml += `
@@ -163,6 +180,7 @@
                                 </div>
                             `;
                         } else {
+                            // Si no, un hueco vacío clicable para reservar
                             rowHtml += `<div class="calendar-cell calendar-slot-empty" onclick="openModal('${dateKey}', ${h})"></div>`;
                         }
                         currentDayLoop.setDate(currentDayLoop.getDate() + 1);
@@ -171,6 +189,7 @@
                 }
             };
 
+            // Moverse semanas adelante o atrás (-1 o +1)
             window.changeWeek = function(offset) {
                 startOfWeek.setDate(startOfWeek.getDate() + (offset * 7));
                 renderCalendar();
@@ -179,27 +198,30 @@
             const modal = document.getElementById('appointment-modal');
             const confirmModal = document.getElementById('confirm-delete-modal');
 
-            // Abrir modal para NUEVA cita
+            // Abrir modal para NUEVA cita (al hacer clic en un hueco gris)
             window.openModal = function(dateKey, hour) {
                 editingMode = false;
                 document.getElementById('modal-title').textContent = 'Registrar Nueva Cita';
                 document.getElementById('save-appointment-btn').textContent = 'Confirmar Cita';
+                // Escondo el botón de borrar porque la cita no existe todavía
                 document.getElementById('delete-appointment-btn').style.display = 'none';
                 document.getElementById('modal-cita-id').value = '';
 
+                // Guardo la fecha y hora seleccionadas en inputs ocultos (hidden)
                 document.getElementById('modal-day').value = dateKey;
                 document.getElementById('modal-time').value = hour;
                 document.getElementById('modal-datetime-label').textContent = `Día: ${dateKey} - Hora: ${hour}:00`;
                 
+                // Limpio campos
                 document.getElementById('client-name').value = '';
                 document.getElementById('service-type').value = 'Corte Clásico';
                 document.getElementById('appointment-notes').value = '';
                 
-                modal.classList.add('active');
+                modal.classList.add('active'); // CSS display overlay
                 setTimeout(() => document.getElementById('client-name').focus(), 100);
             };
 
-            // Abrir modal para EDITAR cita existente
+            // Abrir modal para EDITAR cita existente (al hacer clic en un hueco pintado)
             window.openEditModal = function(slotKey) {
                 const apt = appointments[slotKey];
                 if (!apt) return;
@@ -211,13 +233,15 @@
 
                 document.getElementById('modal-title').textContent = 'Editar Cita';
                 document.getElementById('save-appointment-btn').textContent = 'Guardar Cambios';
+                // Ahora sí muestro el botón de basura
                 document.getElementById('delete-appointment-btn').style.display = 'inline-flex';
-                document.getElementById('modal-cita-id').value = apt.id;
+                document.getElementById('modal-cita-id').value = apt.id; // Necesito el ID real de la BD para el UPDATE
 
                 document.getElementById('modal-day').value = dateKey;
                 document.getElementById('modal-time').value = hour;
                 document.getElementById('modal-datetime-label').textContent = `Día: ${dateKey} - Hora: ${hour}:00`;
                 
+                // Relleno el form con los datos de la cita seleccionada
                 document.getElementById('client-name').value = apt.client;
                 document.getElementById('service-type').value = apt.service;
                 document.getElementById('appointment-notes').value = apt.notes || '';
@@ -230,6 +254,7 @@
                 modal.classList.remove('active');
             };
 
+            // Enviar los datos del modal al backend
             window.saveAppointment = async function() {
                 const client = document.getElementById('client-name').value.trim();
                 const service = document.getElementById('service-type').value;
@@ -244,6 +269,7 @@
                 }
 
                 try {
+                    // Decido si hacer PUT (editar) o POST (crear) según la bandera 'editingMode'
                     const isEdit = editingMode && citaId;
                     const res = await fetch(`${API_BASE}/citas.php`, {
                         method: isEdit ? 'PUT' : 'POST',
@@ -257,7 +283,7 @@
                     
                     if (data.success) {
                         closeModal();
-                        loadAppointments();
+                        loadAppointments(); // Si ha ido bien, refresco los datos visuales
                     } else {
                         alert('Error: ' + data.message);
                     }
@@ -266,7 +292,7 @@
                 }
             };
 
-            // Eliminar cita — muestra confirmación
+            // Estas funciones manejan un modal de seguridad extra para evitar borrar citas por error.
             window.deleteAppointment = function() {
                 confirmModal.classList.add('active');
             };
@@ -280,6 +306,7 @@
                 if (!citaId) return;
 
                 try {
+                    // Petición DELETE a la BD
                     const res = await fetch(`${API_BASE}/citas.php`, {
                         method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' },
@@ -290,7 +317,7 @@
                     if (data.success) {
                         confirmModal.classList.remove('active');
                         closeModal();
-                        loadAppointments();
+                        loadAppointments(); // Recargar visual
                     } else {
                         alert('Error: ' + data.message);
                     }
@@ -299,6 +326,7 @@
                 }
             };
 
+            // Cerrar el modal al pinchar fuera del cuadro blanco
             modal.addEventListener('click', (e) => {
                 if(e.target === modal) closeModal();
             });
@@ -307,7 +335,7 @@
                 if(e.target === confirmModal) cancelDelete();
             });
 
-            // Iniciar cargando desde la BD
+            // Arranque principal: pido datos
             loadAppointments();
         });
     </script>

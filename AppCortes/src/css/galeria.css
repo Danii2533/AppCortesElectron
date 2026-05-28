@@ -1,4 +1,5 @@
 /* ================= GALLERY GRID ================= */
+/* Utilizo CSS Grid y auto-fit para que la galería de imágenes se adapte automáticamente al tamaño de la pantalla sin medias queries. */
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

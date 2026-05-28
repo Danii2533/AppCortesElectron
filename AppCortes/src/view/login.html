@@ -19,20 +19,23 @@
   </div>
 
   <script>
+    // Defino la URL base de mi API local para no tener que repetirla.
     const API_BASE = 'http://localhost/appcortes/api';
 
     document.getElementById('entrar-btn').addEventListener('click', async () => {
+      // Cojo los valores de los inputs y les quito los espacios en blanco.
       const email    = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
       const msg      = document.getElementById('login-message');
 
-      msg.style.color = '#e74c3c';
+      msg.style.color = '#e74c3c'; // Rojo para los errores.
       if (!email || !password) {
         msg.textContent = 'Rellena todos los campos.';
         return;
       }
 
       try {
+        // Hago la petición POST a mi API de login.
         const res  = await fetch(`${API_BASE}/login.php`, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -41,15 +44,17 @@
         const data = await res.json();
 
         if (data.success) {
-          // Guardar sesión en localStorage
+          // Si el login es correcto, guardo los datos del usuario en el localStorage
+          // Esto es como mi "sesión" en el frontend para saber quién está logueado y qué rol tiene.
           localStorage.setItem('session', JSON.stringify({
             id:     data.id,
             nombre: data.nombre,
             email:  data.email,
             rol:    data.rol,
           }));
-          msg.style.color = '#2ecc71';
+          msg.style.color = '#2ecc71'; // Verde para el éxito
           msg.textContent = `¡Bienvenido, ${data.nombre}!`;
+          // Le digo a Electron que cierre esta ventana y abra la principal (general.html)
           window.electronAPI.showGaleriaWindow();
         } else {
           msg.textContent = data.message || 'Error al iniciar sesión.';
@@ -60,10 +65,11 @@
     });
 
     document.getElementById('register-btn').addEventListener('click', () => {
+      // Evento para ir a la ventana de registro.
       window.electronAPI.showRegisterWindow();
     });
 
-    // Permitir login con Enter
+    // Pequeño detalle de UX: permito que el usuario inicie sesión simplemente pulsando Enter.
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') document.getElementById('entrar-btn').click();
     });

@@ -26,9 +26,11 @@
     <a id="tengo_cuenta">¿Ya tienes una cuenta? Inicia Sesión</a>
 
     <script>
+      // Ruta de la API.
       const API_BASE = 'http://localhost/appcortes/api';
 
       document.getElementById('register-btn').addEventListener('click', async () => {
+        // Obtengo los datos del formulario.
         const nombre    = document.getElementById('username').value.trim();
         const email     = document.getElementById('email').value.trim();
         const password  = document.getElementById('password').value.trim();
@@ -37,6 +39,7 @@
 
         msg.style.color = '#e74c3c';
 
+        // Validaciones básicas en frontend antes de molestar al backend.
         if (!nombre || !email || !password || !confirm) {
           msg.textContent = 'Rellena todos los campos.';
           return;
@@ -51,6 +54,7 @@
         }
 
         try {
+          // Envío los datos de registro.
           const res  = await fetch(`${API_BASE}/register.php`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -61,9 +65,9 @@
           if (data.success) {
             msg.style.color = '#2ecc71';
             msg.textContent = data.message;
-            // Limpiar campos
+            // Limpio el formulario para que no queden datos sueltos.
             document.querySelectorAll('input').forEach(i => i.value = '');
-            // Volver al login tras 2 s
+            // Espero 2 segunditos para que el usuario lea el mensaje de éxito, y le llevo al login.
             setTimeout(() => window.electronAPI.showLoginWindow(), 2000);
           } else {
             msg.textContent = data.message || 'Error al registrarse.';
@@ -73,6 +77,7 @@
         }
       });
 
+      // Evento para volver al login si el usuario se equivocó de botón.
       document.getElementById('tengo_cuenta').addEventListener('click', () => {
         window.electronAPI.showLoginWindow();
       });

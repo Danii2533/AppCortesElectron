@@ -41,9 +41,8 @@
             <button class="upload-btn" onclick="saveCut()">Guardar Corte</button>
         </div>
     </div>
-</div>
-
-    <script>
+</di    <script>
+        // Aquí controlo toda la lógica de la galería de cortes.
         document.addEventListener('DOMContentLoaded', function() {
             const API_BASE = 'http://localhost/appcortes/api';
         const galleryContainer = document.getElementById('gallery-container');
@@ -51,23 +50,26 @@
         const fileInput = document.getElementById('cut-image');
         const preview = document.getElementById('image-preview');
         const placeholder = document.getElementById('upload-placeholder');
-        let selectedBase64 = null;
+        let selectedBase64 = null; // Variable para almacenar la imagen que suba el usuario antes de enviarla.
 
-        // Preview de imagen al seleccionar archivo
+        // Evento que se dispara cuando el usuario selecciona una imagen de su PC.
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
+            // Uso FileReader para convertir la imagen a formato Base64.
+            // Esto me permite mostrar la previsualización al momento y también mandar la imagen como texto plano a mi API de PHP sin complicarme con FormData.
             const reader = new FileReader();
             reader.onload = (ev) => {
                 selectedBase64 = ev.target.result;
                 preview.src = selectedBase64;
-                preview.style.display = 'block';
-                placeholder.style.display = 'none';
+                preview.style.display = 'block'; // Muestro la foto
+                placeholder.style.display = 'none'; // Escondo el icono de la camarita
             };
             reader.readAsDataURL(file);
         });
 
+        // Pide todos los cortes a la BD.
         async function loadCuts() {
             try {
                 const res = await fetch(`${API_BASE}/cortes.php`);
@@ -80,10 +82,14 @@
                         return;
                     }
 
+                    // Por cada corte de pelo de la BD, genero su tarjeta HTML.
                     data.cortes.forEach(corte => {
+                        // Construyo la ruta hacia la imagen local guardada por el backend.
                         const imgSrc = corte.imagen_path
                             ? `../../resources/cortes_de_pelo/${corte.imagen_path}`
                             : '';
+                        
+                        // onerror: si por algún motivo la imagen no existe en la carpeta (ej: borrada a mano), se oculta para no verse rota.
                         const card = `
                             <div class="cut-card">
                                 <img src="${imgSrc}" alt="${corte.nombre}" onerror="this.style.display='none'">
@@ -102,6 +108,7 @@
             }
         }
 
+        // Abrir el modal de añadir foto y limpiar basura de veces anteriores
         window.openCutModal = function () {
             document.getElementById('cut-name').value = '';
             document.getElementById('cut-tags').value = '';
@@ -117,6 +124,7 @@
             modal.classList.remove('active');
         };
 
+        // Guardar el corte en la base de datos
         window.saveCut = async function () {
             const nombre = document.getElementById('cut-name').value.trim();
             const tags = document.getElementById('cut-tags').value.trim();
@@ -131,6 +139,7 @@
             }
 
             try {
+                // Envío la imagen en Base64 en el cuerpo del JSON, el backend se encargará de decodificarla y guardarla como archivo.
                 const res = await fetch(`${API_BASE}/cortes.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -144,7 +153,7 @@
 
                 if (data.success) {
                     closeCutModal();
-                    loadCuts();
+                    loadCuts(); // Recargo la galería
                 } else {
                     alert('Error: ' + data.message);
                 }
@@ -160,4 +169,4 @@
         // Carga inicial
         loadCuts();
     });
-</script>
+    </script>

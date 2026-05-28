@@ -39,11 +39,13 @@
 </div>
 
 <script>
+    // Este script se encarga de la vista de gestión de clientes.
     document.addEventListener('DOMContentLoaded', function() {
         const API_BASE = 'http://localhost/appcortes/api';
         const listContainer = document.getElementById('client-list-container');
         const modal = document.getElementById('client-modal');
 
+        // Función para pedir los clientes a mi API PHP y pintarlos en la pantalla
         async function loadClients() {
             try {
                 const res = await fetch(`${API_BASE}/clientes.php`);
@@ -51,11 +53,13 @@
 
                 if (data.success) {
                     listContainer.innerHTML = '';
+                    // Si no hay ninguno, muestro un mensaje amigable en vez de dejar la pantalla vacía
                     if (data.clientes.length === 0) {
                         listContainer.innerHTML = '<p style="color:var(--normal-text);">No hay clientes registrados aún.</p>';
                         return;
                     }
 
+                    // Recorro los clientes y genero sus tarjetas HTML dinámicamente
                     data.clientes.forEach(client => {
                         const lastVisit = client.ultima_visita ? client.ultima_visita : 'Sin visitas previas';
                         const card = `
@@ -75,18 +79,21 @@
             }
         }
 
+        // Abre el pop-up (modal) para añadir un cliente nuevo y limpia los campos que tuviera de antes
         window.openClientModal = function () {
             document.getElementById('new-client-name').value = '';
             document.getElementById('new-client-email').value = '';
             document.getElementById('new-client-phone').value = '';
-            modal.classList.add('active');
-            setTimeout(() => document.getElementById('new-client-name').focus(), 100);
+            modal.classList.add('active'); // CSS hace que aparezca
+            setTimeout(() => document.getElementById('new-client-name').focus(), 100); // Foco automático para escribir más rápido
         }
 
+        // Cierra el pop-up
         window.closeClientModal = function () {
             modal.classList.remove('active');
         }
 
+        // Función que coge los datos del pop-up y los manda al backend
         window.saveClient = async function () {
             const nombre = document.getElementById('new-client-name').value.trim();
             const email = document.getElementById('new-client-email').value.trim();
@@ -98,6 +105,7 @@
             }
 
             try {
+                // Hago la petición POST
                 const res = await fetch(`${API_BASE}/clientes.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -107,7 +115,7 @@
 
                 if (data.success) {
                     closeClientModal();
-                    loadClients();
+                    loadClients(); // Recargo la lista completa para que aparezca el nuevo al instante
                 } else {
                     alert('Error: ' + data.message);
                 }
@@ -116,11 +124,12 @@
             }
         }
 
+        // Pequeño truco UX: si el usuario hace clic fuera del cuadradito del modal, lo cierro.
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeClientModal();
         });
 
-        // Inicializar carga desde BBDD
+        // Al cargar la vista por primera vez, llamo a la BD para tener los datos listos.
         loadClients();
     });
 </script>

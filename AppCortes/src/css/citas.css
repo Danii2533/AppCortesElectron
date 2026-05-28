@@ -1,6 +1,8 @@
 /* ================= CALENDAR GRID ================= */
+/* He diseñado este CSS usando CSS Grid para pintar fácilmente las horas y los días de la semana. */
 .calendar-grid {
     display: grid;
+    /* 1 columna para las horas (80px) y 6 para los días iguales (1fr) */
     grid-template-columns: 80px repeat(6, 1fr);
     background-color: var(--bg-body);
     border-radius: 8px;
