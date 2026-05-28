@@ -68,7 +68,7 @@
 </div>
 
     <script>
-        (function initCalendar() {
+        document.addEventListener('DOMContentLoaded', function() {
             const API_BASE = 'http://localhost/appcortes/api';
             const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
             const startHour = 9;
@@ -309,5 +309,5 @@
 
             // Iniciar cargando desde la BD
             loadAppointments();
-        })();
+        });
     </script>

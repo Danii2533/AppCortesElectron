@@ -1,3 +1,5 @@
+if (require('electron-squirrel-startup')) return;
+
 const path = require("path");
 const { app, BrowserWindow, ipcMain } = require("electron");
 
@@ -15,15 +17,12 @@ function createWindows() {
     frame: false,
     alwaysOnTop: true,
     resizable: false,
-    // [Ruta de recurso] resources está en /src/resources
     icon: path.join(__dirname, '..', '..', 'resources', 'icono.png'), 
     webPreferences: {
-      // preload.js está en la misma carpeta (/js)
       preload: path.join(__dirname, 'preload.js')
     }
   });
   
-  // ¡Ruta corregida a /src/views/splash.html!
   splashWindow.loadFile(path.join(__dirname, "..", "view", "splash.html")); 
 
 
@@ -34,14 +33,12 @@ function createWindows() {
     height: 800,
     resizable: false,
     show: false,
-    // [Ruta de recurso] resources está en /src/resources
     icon: path.join(__dirname, '..', '..', 'resources', 'icono.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
   });
   
-  // ¡Ruta corregida a /src/views/login.html!
   mainWindow.loadFile(path.join(__dirname, "..", "view", "login.html"));
 
   mainWindow.on('closed', () => {
@@ -57,14 +54,12 @@ function createWindows() {
     height: 800,
     resizable: false,
     show: false,
-    // [Ruta de recurso] resources está en /src/resources
     icon: path.join(__dirname, '..', '..', 'resources', 'icono.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
   });
 
-  // ¡Ruta corregida a /src/views/register.html!
   registerWindow.loadFile(path.join(__dirname, '..', 'view', 'register.html'));
 
   registerWindow.on('closed', () => {
@@ -80,14 +75,12 @@ function createWindows() {
     height: 900,
     resizable: false,
     show: false,
-    // [Ruta de recurso] resources está en /src/resources
     icon: path.join(__dirname, '..', '..', 'resources', 'icono.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
   });
 
-  // ¡Ruta corregida a /src/views/general.html!
   generalWindow.loadFile(path.join(__dirname, '..', 'view', 'general.html'));
 
   generalWindow.on('closed', () => {
@@ -99,7 +92,6 @@ function createWindows() {
   // directamente con overlays CSS dentro de cada vista HTML.
 }
 
-// ... (Resto del código sin cambios) ...
 
 function hideAllWindows() {
   const windows = BrowserWindow.getAllWindows();
@@ -155,7 +147,7 @@ async function performStartupChecks() {
 }
 
 
-// --- EVENTOS DE VENTANAS (sin cambios) --- //
+// --- EVENTOS DE VENTANAS --- //
 
 // Fin del splash → mostrar login
 ipcMain.on('splash-finished', () => {

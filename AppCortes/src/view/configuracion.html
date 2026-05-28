@@ -168,7 +168,7 @@
             }
         });
 
-        (async function initConfig() {
+        window.addEventListener('DOMContentLoaded', async () => {
             const API_BASE = 'http://localhost/appcortes/api';
             // Leemos la sesión global expuesta por general.html
             const session  = window.appSession || JSON.parse(localStorage.getItem('session') || '{}');
@@ -241,9 +241,8 @@
                     alert('Error de conexión al cambiar estado.');
                 }
             };
-        })();
+        });
     </script>
-
     <style>
         .admin-table {
             width: 100%;

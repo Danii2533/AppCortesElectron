@@ -43,9 +43,9 @@
     </div>
 </div>
 
-<script>
-    (function initGaleria() {
-        const API_BASE = 'http://localhost/appcortes/api';
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const API_BASE = 'http://localhost/appcortes/api';
         const galleryContainer = document.getElementById('gallery-container');
         const modal = document.getElementById('cut-modal');
         const fileInput = document.getElementById('cut-image');
@@ -159,5 +159,5 @@
 
         // Carga inicial
         loadCuts();
-    })();
+    });
 </script>

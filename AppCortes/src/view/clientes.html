@@ -39,7 +39,7 @@
 </div>
 
 <script>
-    (function initClientes() {
+    document.addEventListener('DOMContentLoaded', function() {
         const API_BASE = 'http://localhost/appcortes/api';
         const listContainer = document.getElementById('client-list-container');
         const modal = document.getElementById('client-modal');
@@ -122,5 +122,5 @@
 
         // Inicializar carga desde BBDD
         loadClients();
-    })();
+    });
 </script>

@@ -1,10 +1,10 @@
-# 💈 Ethan Cuts - Sistema de Gestión de Barbería
+# Ethan Cuts - Sistema de Gestión de Barbería
 
-Bienvenido a **Ethan Cuts**, una aplicación de escritorio premium desarrollada con **Electron** para la gestión integral de barberías y salones de estética. Este sistema combina una interfaz ágil e interactiva de escritorio con un potente backend API en **PHP** y una base de datos relacional **MySQL**.
+Sistema de escritorio desarrollado con Electron para la gestión de barberías. Utiliza PHP y MySQL para el backend.
 
 ---
 
-## 🚀 Características Principales
+## Características Principales
 
 *   **Pantalla de Carga Dinámica (Splash Screen):** Animación de inicio elegante que realiza comprobaciones del sistema y verifica la conectividad de la API en tiempo real.
 *   **Gestión de Citas (Agenda):** Calendario y control de reservas con estados dinámicos (*pendiente*, *confirmada*, *en curso*, *completada*, *cancelada*), asignando clientes, barberos y cortes específicos.
@@ -18,7 +18,7 @@ Bienvenido a **Ethan Cuts**, una aplicación de escritorio premium desarrollada 
 
 ---
 
-## 🛠️ Arquitectura y Tecnologías
+## Arquitectura y Tecnologías
 
 El sistema está desarrollado bajo una arquitectura cliente-servidor distribuida:
 
@@ -34,7 +34,7 @@ El sistema está desarrollado bajo una arquitectura cliente-servidor distribuida
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```text
 AppCortes/
@@ -75,7 +75,7 @@ AppCortes/
 
 ---
 
-## ⚙️ Requisitos Previos
+## Requisitos Previos
 
 Antes de configurar el proyecto, asegúrate de tener instalado:
 *   [Node.js](https://nodejs.org/) (Versión 18 o superior recomendada)
@@ -83,7 +83,7 @@ Antes de configurar el proyecto, asegúrate de tener instalado:
 
 ---
 
-## 📦 Instalación y Configuración
+## Instalación y Configuración
 
 ### 1. Preparar la Base de Datos
 1.  Abre el panel de control de tu servidor local (ej. XAMPP) e inicia los servicios de **Apache** y **MySQL**.
@@ -112,7 +112,7 @@ Antes de configurar el proyecto, asegúrate de tener instalado:
 
 ---
 
-## 🖥️ Ejecución y Desarrollo
+## Ejecución y Desarrollo
 
 Una vez completados los pasos anteriores, puedes ejecutar la aplicación en modo desarrollo:
 
@@ -129,7 +129,7 @@ El proyecto utiliza **Electron Forge** para facilitar el ciclo de desarrollo y e
 
 ---
 
-## 🔐 Seguridad y Criptografía
+## Seguridad y Criptografía
 
 El módulo `src/js/encryptor.cjs` provee funciones asíncronas seguras para cifrado simétrico en el entorno local del cliente, previniendo fugas de datos sensibles antes de enviarlos o guardarlos.
 Puedes validar el funcionamiento del módulo criptográfico ejecutando el archivo de prueba desde tu consola:
@@ -140,7 +140,7 @@ node BBDD/bdd.cjs
 
 ---
 
-## 👥 Datos de Acceso de Prueba
+## Datos de Acceso de Prueba
 El esquema de base de datos incluye cuentas iniciales para agilizar el proceso de desarrollo y demostración:
 
 | Rol | Correo Electrónico | Contraseña |
@@ -151,10 +151,10 @@ El esquema de base de datos incluye cuentas iniciales para agilizar el proceso d
 
 ---
 
-## 📝 Licencia
+## Licencia
 
 Este proyecto está bajo la licencia **MIT**. Consulta el archivo de licencia correspondiente para más detalles.
 
 ---
 
-Desarrollado con ❤️ por **Daniel Bailo** ([danielbailo2004@gmail.com](mailto:danielbailo2004@gmail.com)).
+Autor: **Daniel Bailo** ([danielbailo2004@gmail.com](mailto:danielbailo2004@gmail.com)).
